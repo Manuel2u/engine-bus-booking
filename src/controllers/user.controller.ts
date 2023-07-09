@@ -3,6 +3,7 @@ import { IAppContext } from "../types/app";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
 import sendSMS from "../utils/sms";
+import { user } from "firebase-functions/v1/auth";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -55,6 +56,22 @@ export const SIGNUP = async (
 
 /*********************** RESEND VERIFICATION CODE *************************/
 
+export const RESEND = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const message: string =
+      (await req.context.services?.code.sendCode(req.user._id)) || "";
+
+    sendSMS(req.user.phone, message);
+
+    return res.status(200).json("code resent succesfully");
+  } catch (e) {
+    next(e);
+  }
+};
 
 /*********************** VERIFY PHONE NUMBER *************************/
 

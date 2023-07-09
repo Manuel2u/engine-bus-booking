@@ -25,7 +25,7 @@ export default class UserService extends IService {
       });
 
       if (_user) {
-        throw createError("User already exits", 404);
+        throw createError("User already exits", 400);
       }
 
       const user = new this.db.UserModel({
@@ -76,6 +76,8 @@ export default class UserService extends IService {
       throw createError(error.message, 500);
     }
   }
+
+
 
   async signIn(input: ISigninInput): Promise<IUserAuth | string> {
     try {

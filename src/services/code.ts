@@ -23,9 +23,10 @@ export default class Code extends IService {
       await _code.save();
     }
   
-    const message = `${code} is your FinaBank verification code.`;
+    const message = `${code} is your AppName verification code.`;
   
     return message || "";
   }
+
   
 }
