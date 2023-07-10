@@ -27,9 +27,80 @@ export default class UserService extends IService {
       if (_user) {
         throw createError("User already exits", 400);
       }
+      const usersNameFirstLetter = input.fullName.split(" ")[0];
 
       const user = new this.db.UserModel({
         ...input,
+        profilePic: usersNameFirstLetter,
+        role: "USER",
+      });
+      await user.save();
+
+      const savedUser = await this.db.UserModel.findById(user._id).select(
+        "-password"
+      );
+
+      const token = _generateToken(user);
+      const userAuth: IUserAuth = {
+        user: savedUser as IUserwithoutPassWord,
+        token: token,
+      };
+
+      return userAuth;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async CreateAdmin(input: IUserInput): Promise<IUserAuth> {
+    try {
+      const _user = await this.db.UserModel.findOne({
+        email: input.email,
+      });
+
+      if (_user) {
+        throw createError("User already exits", 400);
+      }
+      const usersNameFirstLetter = input.fullName.split(" ")[0];
+
+      const user = new this.db.UserModel({
+        ...input,
+        profilePic: usersNameFirstLetter,
+        role: "ADMIN",
+      });
+      await user.save();
+
+      const savedUser = await this.db.UserModel.findById(user._id).select(
+        "-password"
+      );
+
+      const token = _generateToken(user);
+      const userAuth: IUserAuth = {
+        user: savedUser as IUserwithoutPassWord,
+        token: token,
+      };
+
+      return userAuth;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async CreateSuperAdmin(input: IUserInput): Promise<IUserAuth> {
+    try {
+      const _user = await this.db.UserModel.findOne({
+        email: input.email,
+      });
+
+      if (_user) {
+        throw createError("User already exits", 400);
+      }
+      const usersNameFirstLetter = input.fullName.split(" ")[0];
+
+      const user = new this.db.UserModel({
+        ...input,
+        profilePic: usersNameFirstLetter,
+        role: "SUPERADMIN",
       });
       await user.save();
 
@@ -76,8 +147,6 @@ export default class UserService extends IService {
       throw createError(error.message, 500);
     }
   }
-
-
 
   async signIn(input: ISigninInput): Promise<IUserAuth | string> {
     try {

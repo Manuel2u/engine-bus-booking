@@ -4,9 +4,10 @@ export interface IUser {
   fullName: string;
   phone: string;
   email: string;
+  profilePic : string
   password: string;
   isPhoneNumberVerified: boolean;
-  verificationCode?: Types.ObjectId;
+  role : "ADMIN" | "USER" | "SUPERADMIN"
   comparePasswords(password: string): Promise<boolean>;
 }
 

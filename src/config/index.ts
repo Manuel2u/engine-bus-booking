@@ -17,6 +17,11 @@ export interface Config {
     secret: string;
     expiresIn : string
   };
+  mail: {
+    key: string;
+    domain: string;
+    username : string
+  };
 }
 
 

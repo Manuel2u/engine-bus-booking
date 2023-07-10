@@ -11,7 +11,7 @@ const UserSchema = new Schema<IUserSchema>(
     email: {
       type: SchemaTypes.String,
       required: true,
-    }, 
+    },
     phone: {
       type: SchemaTypes.String,
       required: true,
@@ -23,6 +23,11 @@ const UserSchema = new Schema<IUserSchema>(
     isPhoneNumberVerified: {
       type: SchemaTypes.Boolean,
       default: false,
+    },
+    role: {
+      type: SchemaTypes.String,
+      enum: ["ADMIN", "USER", "SUPERADMIN"],
+      required: true,
     },
   },
   { timestamps: true }

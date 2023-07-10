@@ -43,6 +43,30 @@ export const verifyAccessToken = async (
   }
 };
 
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as IUser;
+
+  if (user.role === "ADMIN") {
+    next();
+  } else {
+    return res.status(401).json({ message: "User is unauthorized" });
+  }
+};
+
+export const isSuperAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as IUser;
+
+  if (user.role === "SUPERADMIN") {
+    next();
+  } else {
+    return res.status(401).json({ message: "User is unauthorized" });
+  }
+};
+
 export const isPhoneNumberVerified = (
   req: Request,
   res: Response,

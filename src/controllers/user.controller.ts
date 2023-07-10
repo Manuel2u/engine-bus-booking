@@ -54,6 +54,91 @@ export const SIGNUP = async (
   }
 };
 
+///*************************CREATE ADMIN*************************** */
+export const CREATEADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      email,
+      fullName,
+      password,
+      phone,
+    }: {
+      email: string;
+      fullName: string;
+      password: string;
+      phone: string;
+    } = req.body;
+
+    if (!email || !fullName || !password || !phone) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const _user = await req.context.services?.user.CreateAdmin({
+      email,
+      fullName,
+      password,
+      phone,
+    });
+
+    const message: string =
+      (await req.context.services?.code.sendCode(_user?.user._id)) || "";
+
+    sendSMS(phone, message);
+
+    return res.status(200).json(_user);
+  } catch (e) {
+    next(e);
+  }
+};
+///*************************CREATE SUPERADMIN*************************** */
+export const CREATESUPERADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      email,
+      fullName,
+      password,
+      phone,
+    }: {
+      email: string;
+      fullName: string;
+      password: string;
+      phone: string;
+    } = req.body;
+
+    if (!email || !fullName || !password || !phone) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const _user = await req.context.services?.user.CreateSuperAdmin({
+      email,
+      fullName,
+      password,
+      phone,
+    });
+
+    const message: string =
+      (await req.context.services?.code.sendCode(_user?.user._id)) || "";
+
+    sendSMS(phone, message);
+
+    return res.status(200).json(_user);
+  } catch (e) {
+    next(e);
+  }
+};
+
 /*********************** RESEND VERIFICATION CODE *************************/
 
 export const RESEND = async (
@@ -75,7 +160,7 @@ export const RESEND = async (
 
 /*********************** VERIFY PHONE NUMBER *************************/
 
-export const VERIFY = async (
+export const VERIFYPHONE = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -99,6 +184,9 @@ export const VERIFY = async (
     next(e);
   }
 };
+
+/*********************** VERIFY EMAIL *************************/
+
 
 /***************************** SIGN IN ******************************/
 
