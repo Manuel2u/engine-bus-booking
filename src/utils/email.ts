@@ -5,7 +5,7 @@ import { config } from "../config/index";
 
 const batman = mailgun.client({
   username: config.mail.username,
-  key: config.mail.key 
+  key: config.mail.key,
 });
 
 interface Imessage {
