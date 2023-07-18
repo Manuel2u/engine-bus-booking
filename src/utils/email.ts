@@ -30,7 +30,9 @@ async function sendEmail(email: string, subject: string, message: Imessage) {
   }
 }
 
-sendEmail("emmanueldodoo94@gmail.com", "Hello", {
-  text: "Hello",
-  html: "<h1>Hello</h1>",
-});
+export {sendEmail};
+
+// sendEmail("emmanueldodoo94@gmail.com", "Hello", {
+//   text: "Hello",
+//   html: "<h1>Hello</h1>",
+// });

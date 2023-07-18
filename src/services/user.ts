@@ -120,6 +120,13 @@ export default class UserService extends IService {
     }
   }
 
+  /***************************Social Media Auth ****************************/
+
+  async SignUpWithGoogle(){
+  }
+
+  /***************************Social Media Auth ****************************/
+
   async verifyCode(input: IVerifyPhoneInput): Promise<string> {
     try {
       const code = await this.db.CodeModel.findOne({ user: input.id });
@@ -173,4 +180,6 @@ export default class UserService extends IService {
       throw createError(e.message, 500);
     }
   }
+
+  /*************************** Reset Password ****************************/
 }

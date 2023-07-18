@@ -211,3 +211,31 @@ export const SIGNIN = async (
     next(e);
   }
 };
+
+/***************************** SIGN IN / Up WITH GOOGLE ******************************/
+
+// export const GOOGLE = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { email, fullName, phone } = req.body;
+
+//     if (!email || !fullName || !phone) {
+//       return res
+//         .status(400)
+//         .json({ message: "Make sure all input fileds are correct" });
+//     }
+
+//     const user = await req.context.services?.user.google({
+//       email,
+//       fullName,
+//       phone,
+//     });
+
+//     return res.status(200).json(user);
+//   } catch (e) {
+//     next(e);
+//   }
+// }

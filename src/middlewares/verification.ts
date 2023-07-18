@@ -5,6 +5,7 @@ import { IUser, IUserSchema } from "../types/user";
 dotenv.config();
 
 import createError from "../utils/error";
+import { initialize } from "passport";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -80,3 +81,4 @@ export const isPhoneNumberVerified = (
     return res.status(401).json({ message: "Phone number not verified" });
   }
 };
+
