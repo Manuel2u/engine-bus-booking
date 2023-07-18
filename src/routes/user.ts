@@ -7,6 +7,7 @@ import {
   RESEND,
   CREATEADMIN,
   CREATESUPERADMIN,
+  GOOGLE,
 } from "../controllers/user.controller";
 import { verifyAccessToken } from "../middlewares/verification";
 import passport from "passport";
@@ -25,6 +26,13 @@ router.post("/signin", SIGNIN);
 router.post("/verifyphone", verifyAccessToken, VERIFYPHONE);
 
 router.get("/resendsms", verifyAccessToken, RESEND);
+
+router.get(
+  "/google/redirect",
+  initializeGoogleStrategy,
+  passport.authenticate("google"),
+  GOOGLE
+);
 
 router.get(
   "/google",

@@ -14,7 +14,7 @@ export default class OAuthService extends IService {
           {
             clientID: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-            callbackURL: "http://localhost:8080/auth/google/redirect",
+            callbackURL: "http://localhost:8080/api/v1/auth/google/redirect",
           },
           function (
             accessToken: any,
@@ -22,7 +22,7 @@ export default class OAuthService extends IService {
             profile: any,
             done: any
           ) {
-            // Your authentication logic goes here
+            // authentication logic goes here
           }
         )
       );
