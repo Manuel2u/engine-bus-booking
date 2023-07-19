@@ -1,17 +1,13 @@
 import { IAppContext, IService } from "../types/app";
 import {
-  IGetPhoneInput,
   ISigninInput,
   IUserAuth,
   IUserInput,
-  IUserSchema,
   IUserwithoutPassWord,
   IVerifyPhoneInput,
 } from "../types/user";
 import createError from "../utils/error";
-import sendSMS from "../utils/sms";
 import { _generateToken } from "../utils/token";
-import generateVerificationCode from "../utils/verification";
 
 export default class UserService extends IService {
   constructor(appContext: IAppContext) {
