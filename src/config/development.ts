@@ -17,8 +17,8 @@ const config: Config = {
   },
   mail: {
     username: process.env.MAILGUN_USERNAME || "",
-    key: process.env.MAILGUN_API_KEY || "26b2960b8ae02db40b88c8c21f69c262-5645b1f9-6b118c84",
-    domain: process.env.MAIL_DOMAIN || "noreply.emmanueldodoo.live",
+    key: process.env.MAILGUN_API_KEY || "",
+    domain: process.env.MAIL_DOMAIN || "",
    
   },
 };
