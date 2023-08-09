@@ -2,12 +2,13 @@ import express, { NextFunction, Request, Response } from "express";
 import customError from "../middlewares/customError";
 const app = express();
 import authRouter from "../routes/user";
+
 import { Config } from "../config";
 import { IAppContext } from "../types/app";
 import InitDB from "../model";
 import initServices from "../services";
-import cookieParser from 'cookie-parser';
-
+import cookieParser from "cookie-parser";
+// Use the operating time router with a base path
 export const start = async (config: Config) => {
   try {
     app.use(express.json());
@@ -26,7 +27,6 @@ export const start = async (config: Config) => {
     });
     //use routes
     app.use("/api/v1/auth", authRouter);
-
 
     //use custom error middleware
     app.use(customError);
