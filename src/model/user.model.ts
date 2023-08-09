@@ -24,6 +24,31 @@ const UserSchema = new Schema<IUserSchema>(
       type: SchemaTypes.Boolean,
       default: false,
     },
+    isEmailVerified: {
+      type: SchemaTypes.Boolean,
+      default: false,
+    },
+    googleID: {
+      type: SchemaTypes.String,
+    },
+    faceBookID: {
+      type: SchemaTypes.String,
+    },
+    appleID: {
+      type: SchemaTypes.String,
+    },
+    Bookings: [
+      {
+        type: SchemaTypes.ObjectId,
+        ref: "Bookings",
+      },
+    ],
+    Tickets: [
+      {
+        type: SchemaTypes.ObjectId,
+        ref: "Tickets",
+      },
+    ],
     role: {
       type: SchemaTypes.String,
       enum: ["ADMIN", "USER", "SUPERADMIN"],

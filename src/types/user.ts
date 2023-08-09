@@ -4,15 +4,21 @@ export interface IUser {
   fullName: string;
   phone: string;
   email: string;
-  profilePic : string
+  profilePic: string;
   password: string;
   isPhoneNumberVerified: boolean;
-  role : "ADMIN" | "USER" | "SUPERADMIN"
+  isEmailVerified: boolean;
+  role: "ADMIN" | "USER" | "SUPERADMIN";
+  googleID: string;
+  appleID: string;
+  faceBookID: string;
+  Bookings: Types.ObjectId[];
+  Tickets: Types.ObjectId[];
   comparePasswords(password: string): Promise<boolean>;
 }
 
 export interface IUserwithoutPassWord {
-  _id : Types.ObjectId;
+  _id: Types.ObjectId;
   fullName: string;
   phone: string;
   email: string;

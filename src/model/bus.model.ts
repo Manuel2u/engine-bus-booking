@@ -1,38 +1,46 @@
-import { Document, model, Schema, Types } from "mongoose";
-import { IUserSchema } from "../types/user";
-
-// Interface representing the Bus document in MongoDB
-interface IBus extends Document {
-  busNumber: string;
-  capacity: number;
-  createdBy: Types.ObjectId | IUserSchema; // Reference to the User model
-}
+import { Document, model, Schema, SchemaTypes } from "mongoose";
+import { IBusModel, IBusSchema } from "../types/bus";
 
 // Define the schema for the Bus model
-const BusSchema = new Schema<IBus>(
+const BusSchema = new Schema<IBusSchema>(
   {
-    busNumber: {
-      type: String,
-      required: true,
-      unique: true, // Ensure that the bus number is unique in the collection
-    },
-    capacity: {
-      type: Number,
+    vehicleNumber: {
+      type: SchemaTypes.String,
       required: true,
     },
-    createdBy: {
-      type: Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model
+    model: {
+      type: SchemaTypes.String,
+      required: true,
+    },
+    yearOfMake: {
+      type: SchemaTypes.Number,
+      required: true,
+    },
+    colour: {
+      type: SchemaTypes.String,
+      required: true,
+    },
+    numberOfSeats: {
+      type: SchemaTypes.String,
+      required: true,
+    },
+    status: {
+      type: SchemaTypes.String,
+      required: true,
+    },
+    insurance: {
+      type: SchemaTypes.String,
+      required: true,
+    },
+    roadWorthy: {
+      type: SchemaTypes.String,
       required: true,
     },
   },
-  {
-    timestamps: true, // Adds createdAt and updatedAt fields
-  }
+  { timestamps: true }
 );
 
 // Create and export the Bus model
-const BusModel = model<IBus>("Bus", BusSchema);
+const BusModel = model<IBusSchema, IBusModel>("Bus", BusSchema);
 
 export default BusModel;
-export { IBus };
