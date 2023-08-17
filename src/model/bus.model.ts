@@ -26,6 +26,7 @@ const BusSchema = new Schema<IBusSchema>(
     },
     status: {
       type: SchemaTypes.String,
+      enum: ["ACTIVE", "INACTIVE", "DECOMMISSIONED"],
       required: true,
     },
     insurance: {

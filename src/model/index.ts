@@ -2,23 +2,27 @@ import mongoose, { connect } from "mongoose";
 import UserModel from "./user.model";
 import CodeModel from "./code.model";
 import { Config } from "../config";
-import { IUserModel } from "../types/user";
+import { IAdminModel, ISudoAdminModel, IUserModel } from "../types/user";
 
 import { ICode, ICodeModel } from "../types/code";
 import { IDriverModel } from "../types/driver";
 import { IBusModel } from "../types/bus";
 import { ITicketModel } from "../types/tickets";
 import { IBookingsModel } from "../types/bookings";
-import { IbusOperatorModel } from "../types/busOperator";
+import { IbusCompanyModel } from "../types/busCompany";
 import { ITripModel } from "../types/trips";
 import DriverModel from "./driver.model";
 import BusModel from "./bus.model";
 import TripModel from "./trip.model";
 import TicketModel from "./ticket.model";
 import BookingModel from "./booking.model";
-import BusOperatorModel from "./busOperator.model";
+import BusCompanyModel from "./busCompany.model";
+import AdminModel from "./admin.model";
+import SudoAdminModel from "./sudoadmin.model";
 
 export interface IDb {
+  AdminModel: IAdminModel;
+  SudoAdminModel: ISudoAdminModel;
   UserModel: IUserModel;
   CodeModel: ICodeModel;
   DriverModel: IDriverModel;
@@ -26,7 +30,7 @@ export interface IDb {
   TripModel: ITripModel;
   TicketModel: ITicketModel;
   BookingModel: IBookingsModel;
-  BusOperatorModel: IbusOperatorModel;
+  BusCompanyModel: IbusCompanyModel;
 }
 
 export default async function InitDB(config: Config["db"]): Promise<IDb> {
@@ -34,6 +38,8 @@ export default async function InitDB(config: Config["db"]): Promise<IDb> {
     await connect(config.uri);
     console.log("Database connected");
 
+    await AdminModel.createCollection();
+    await SudoAdminModel.createCollection();
     await UserModel.createCollection();
     await CodeModel.createCollection();
     await DriverModel.createCollection();
@@ -41,14 +47,16 @@ export default async function InitDB(config: Config["db"]): Promise<IDb> {
     await TripModel.createCollection();
     await TicketModel.createCollection();
     await BookingModel.createCollection();
-    await BusOperatorModel.createCollection();
+    await BusCompanyModel.createCollection();
 
     return {
+      AdminModel,
+      SudoAdminModel,
       UserModel,
       CodeModel,
       DriverModel,
       BusModel,
-      BusOperatorModel,
+      BusCompanyModel,
       BookingModel,
       TicketModel,
       TripModel,

@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
-import { IUser, IUserSchema } from "../types/user";
+import {
+  IAdminSchema,
+  ISudoAdminSchema,
+  IUser,
+  IUserSchema,
+} from "../types/user";
 dotenv.config();
 
 import createError from "../utils/error";
@@ -10,6 +15,8 @@ import { initialize } from "passport";
 declare module "express-serve-static-core" {
   interface Request {
     user: IUserSchema;
+    admin: IAdminSchema;
+    sudoadmin: ISudoAdminSchema;
   }
 }
 
@@ -45,9 +52,9 @@ export const verifyAccessToken = async (
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user as IUser;
+  const admin = req.admin as IAdminSchema;
 
-  if (user.role === "ADMIN") {
+  if (admin.role === "ADMIN") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -59,9 +66,25 @@ export const isSuperAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user as IUser;
+  const admin = req.admin as IAdminSchema;
+  const user = req.user as IUserSchema;
 
-  if (user.role === "SUPERADMIN") {
+  if (admin.role === "BUS_COMPANY") {
+    next();
+  } else {
+    return res.status(401).json({ message: "User is unauthorized" });
+  }
+};
+
+export const isSudoAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const sudoadmin = req.sudoadmin as ISudoAdminSchema;
+  const user = req.user as IUserSchema;
+
+  if (sudoadmin.role === "SUDOADMIN") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -81,4 +104,3 @@ export const isPhoneNumberVerified = (
     return res.status(401).json({ message: "Phone number not verified" });
   }
 };
-

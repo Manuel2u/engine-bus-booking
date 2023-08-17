@@ -51,7 +51,7 @@ const UserSchema = new Schema<IUserSchema>(
     ],
     role: {
       type: SchemaTypes.String,
-      enum: ["ADMIN", "USER", "SUPERADMIN"],
+      enum: ["USER"],
       required: true,
     },
   },

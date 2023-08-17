@@ -29,6 +29,11 @@ const driverSchema = new Schema<IDriverSchema>(
       type: SchemaTypes.String,
       required: true,
     },
+    status: {
+      type: SchemaTypes.String,
+      enum: ["ACTIVE", "INACTIVE", "RETIRED"],
+      required: true,
+    },
     profilePicture: {
       type: SchemaTypes.String,
     },

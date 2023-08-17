@@ -8,8 +8,14 @@ export interface IDriver {
   digitalAddress: string;
   license: string;
   licenseClass: string;
+  busCompany: string;
+  status: "ACTIVE" | "INACTIVE" | "RETIRED";
   profilePicture: string;
 }
+
+export interface ICreateDriverInput extends IDriver {}
+
+export interface IUpdateDriverInput extends IDriverSchema {}
 
 export interface IDriverSchema extends IDriver, Document {
   _id: Types.ObjectId;

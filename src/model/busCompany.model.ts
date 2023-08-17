@@ -1,8 +1,8 @@
 import { Schema, SchemaTypes, model } from "mongoose";
-import { IbusOperatorModel, IbusOperatorSchema } from "../types/busOperator";
+import { IbusCompanyModel, IbusCompanySchema } from "../types/busCompany";
 
-const BusOperatorSchema = new Schema<IbusOperatorSchema>({
-  fullName: {
+const busCompanySchema = new Schema<IbusCompanySchema>({
+  name: {
     type: SchemaTypes.String,
     required: true,
   },
@@ -25,10 +25,6 @@ const BusOperatorSchema = new Schema<IbusOperatorSchema>({
     type: SchemaTypes.String,
     required: true,
   },
-  numberOfBuses: {
-    type: SchemaTypes.Number,
-    required: true,
-  },
   Buses: [
     {
       type: SchemaTypes.ObjectId,
@@ -36,6 +32,17 @@ const BusOperatorSchema = new Schema<IbusOperatorSchema>({
       required: true,
     },
   ],
+  Drivers: [
+    {
+      type: SchemaTypes.ObjectId,
+      ref: "Driver",
+      required: true,
+    },
+  ],
+  role: {
+    type: SchemaTypes.String,
+    required: true,
+  },
 
   Trips: [
     {
@@ -51,11 +58,16 @@ const BusOperatorSchema = new Schema<IbusOperatorSchema>({
       required: true,
     },
   ],
+  status: {
+    type: SchemaTypes.String,
+    enum: ["ACCEPTED", "REJECTED", "PENDING"],
+    required: true,
+  },
 });
 
-const busOperatorModel = model<IbusOperatorSchema, IbusOperatorModel>(
-  "BusOperator",
-  BusOperatorSchema
+const busCompanyModel = model<IbusCompanySchema, IbusCompanyModel>(
+  "BusCompany",
+  busCompanySchema
 );
 
-export default busOperatorModel;
+export default busCompanyModel;
