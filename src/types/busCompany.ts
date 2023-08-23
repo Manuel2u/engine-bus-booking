@@ -5,7 +5,6 @@ export interface IbusCompany {
   mobileNumber: string;
   email: string;
   companyDocuments: string;
-  role: "BUS_COMPANY";
   users: Types.ObjectId[];
   Buses: Types.ObjectId[];
   Drivers: Types.ObjectId[];
@@ -17,7 +16,7 @@ export interface IbusCompany {
 export interface ICreateBusCompanyInput
   extends Omit<
     IbusCompany,
-    "role" | "users" | "Buses" | "Drivers" | "status" | "Trips" | "Bookings"
+    "users" | "Buses" | "Drivers" | "status" | "Trips" | "Bookings"
   > {}
 
 export interface IAcceptBusCompany {
@@ -26,6 +25,8 @@ export interface IAcceptBusCompany {
 
 export interface IGetBusCompany {
   _id: Types.ObjectId;
+  skip: number;
+  limit: number;
 }
 export interface IbusCompanySchema extends IbusCompany, Document {
   _id: Types.ObjectId;

@@ -16,6 +16,10 @@ const AdminSchema = new Schema<IAdminSchema>(
       type: SchemaTypes.String,
       required: true,
     },
+    profilePicture: {
+      type: SchemaTypes.String,
+      required: true,
+    },
     password: {
       type: SchemaTypes.String,
       required: true,

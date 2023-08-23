@@ -1,7 +1,18 @@
 import express, { NextFunction, Request, Response } from "express";
 import customError from "../middlewares/customError";
 const app = express();
+
+/************ Import Routes *************/
 import authRouter from "../routes/user";
+import bookingRouter from "../routes/booking";
+import busRouter from "../routes/bus";
+import busCompanyRouter from "../routes/busCompany";
+import driverRouter from "../routes/driver";
+import locationRouter from "../routes/location";
+import ticketRouter from "../routes/ticket";
+import tripRouter from "../routes/trip";
+
+/*************************************/
 
 import { Config } from "../config";
 import { IAppContext } from "../types/app";
@@ -25,8 +36,16 @@ export const start = async (config: Config) => {
       req.context = appContext; // Set the appContext on the request object
       next();
     });
+
     //use routes
     app.use("/api/v1/auth", authRouter);
+    app.use("/api/v1/booking", bookingRouter);
+    app.use("/api/v1/bus", busRouter);
+    app.use("/api/v1/busCompany", busCompanyRouter);
+    app.use("/api/v1/driver", driverRouter);
+    app.use("/api/v1/location", locationRouter);
+    app.use("/api/v1/ticket", ticketRouter);
+    app.use("/api/v1/trip", tripRouter);
 
     //use custom error middleware
     app.use(customError);

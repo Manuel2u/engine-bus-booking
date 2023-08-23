@@ -1,4 +1,4 @@
-// import express from "express";
+import express from "express";
 // import {
 //   addLocation,
 //   deleteLocation,
@@ -7,9 +7,9 @@
 //   getLocationById,
 // } from "../controllers/location.controller";
 
-// const router = express.Router();
+const router = express.Router();
 
-// // Route to add a new location
+// Route to add a new location
 // router.post("/", addLocation);
 
 // // Route to delete a location
@@ -24,4 +24,4 @@
 // // Route to fetch a single location by ID
 // router.get("/:id", getLocationById);
 
-// export default router;
+export default router;

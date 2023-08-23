@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config";
 import sendSMS from "../utils/sms";
 import { user } from "firebase-functions/v1/auth";
+import { ICreateAdminInput, ICreateSudoAdminInput } from "../types/user";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -61,17 +62,7 @@ export const CREATEADMIN = async (
   next: NextFunction
 ) => {
   try {
-    const {
-      email,
-      fullName,
-      password,
-      phone,
-    }: {
-      email: string;
-      fullName: string;
-      password: string;
-      phone: string;
-    } = req.body;
+    const { email, fullName, password, phone }: ICreateAdminInput = req.body;
 
     if (!email || !fullName || !password || !phone) {
       return res
@@ -84,12 +75,13 @@ export const CREATEADMIN = async (
       fullName,
       password,
       phone,
+      busCompany: req.user.busCompany,
     });
 
-    const message: string =
-      (await req.context.services?.code.sendCode(_user?.user._id)) || "";
+    // const message: string =
+    //   (await req.context.services?.code.sendCode(_user?.user._id)) || "";
 
-    sendSMS(phone, message);
+    // sendSMS(phone, message);
 
     return res.status(200).json(_user);
   } catch (e) {
@@ -97,23 +89,14 @@ export const CREATEADMIN = async (
   }
 };
 ///*************************CREATE SUPERADMIN*************************** */
-export const CREATESUPERADMIN = async (
+export const CREATESUDOADMIN = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const {
-      email,
-      fullName,
-      password,
-      phone,
-    }: {
-      email: string;
-      fullName: string;
-      password: string;
-      phone: string;
-    } = req.body;
+    const { email, fullName, password, phone }: ICreateSudoAdminInput =
+      req.body;
 
     if (!email || !fullName || !password || !phone) {
       return res
@@ -121,17 +104,12 @@ export const CREATESUPERADMIN = async (
         .json({ message: "Make sure all input fileds are correct" });
     }
 
-    const _user = await req.context.services?.user.CreateSuperAdmin({
+    const _user = await req.context.services?.user.CreateSudoAdmin({
       email,
       fullName,
       password,
       phone,
     });
-
-    const message: string =
-      (await req.context.services?.code.sendCode(_user?.user._id)) || "";
-
-    sendSMS(phone, message);
 
     return res.status(200).json(_user);
   } catch (e) {
@@ -187,7 +165,6 @@ export const VERIFYPHONE = async (
 
 /*********************** VERIFY EMAIL *************************/
 
-
 /***************************** SIGN IN ******************************/
 
 export const SIGNIN = async (
@@ -204,7 +181,10 @@ export const SIGNIN = async (
         .json({ message: "Make sure all input fileds are correct" });
     }
 
-    const user = await req.context.services?.user.signIn({ email, password });
+    const user = await req.context.services?.user.signInUser({
+      email,
+      password,
+    });
 
     return res.status(200).json(user);
   } catch (e) {
@@ -221,21 +201,18 @@ export const GOOGLE = async (
 ) => {
   try {
     // const { email, fullName, phone } = req.body;
-
     // if (!email || !fullName || !phone) {
     //   return res
     //     .status(400)
     //     .json({ message: "Make sure all input fileds are correct" });
     // }
-
     // const user = await req.context.services?.user.google({
     //   email,
     //   fullName,
     //   phone,
     // });
-
     // return res.status(200).json(user);
   } catch (e) {
     next(e);
   }
-}
+};

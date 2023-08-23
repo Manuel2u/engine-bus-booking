@@ -14,9 +14,7 @@ import { initialize } from "passport";
 
 declare module "express-serve-static-core" {
   interface Request {
-    user: IUserSchema;
-    admin: IAdminSchema;
-    sudoadmin: ISudoAdminSchema;
+    user: IAdminSchema | IUserSchema | ISudoAdminSchema | any;
   }
 }
 
@@ -52,9 +50,10 @@ export const verifyAccessToken = async (
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const admin = req.admin as IAdminSchema;
+  const user = req.user as IAdminSchema;
+  console.log(req.user);
 
-  if (admin.role === "ADMIN") {
+  if (user.role === "ADMIN") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -66,10 +65,10 @@ export const isSuperAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const admin = req.admin as IAdminSchema;
-  const user = req.user as IUserSchema;
+  const user = req.user as IAdminSchema;
+  console.log(req.user);
 
-  if (admin.role === "BUS_COMPANY") {
+  if (user.role === "BUS_COMPANY") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -81,10 +80,10 @@ export const isSudoAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const sudoadmin = req.sudoadmin as ISudoAdminSchema;
-  const user = req.user as IUserSchema;
+  const user = req.user as ISudoAdminSchema;
+  console.log(req.user);
 
-  if (sudoadmin.role === "SUDOADMIN") {
+  if (user.role === "SUDOADMIN") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });

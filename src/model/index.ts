@@ -35,7 +35,7 @@ export interface IDb {
 
 export default async function InitDB(config: Config["db"]): Promise<IDb> {
   try {
-    await connect(config.uri);
+    await connect(config.uri, { autoIndex: false });
     console.log("Database connected");
 
     await AdminModel.createCollection();

@@ -1,31 +1,23 @@
-// import { Router } from "express";
-// import * as busController from "../controllers/bus.controller";
-// import {
-//   isAdmin,
-//   isSuperAdmin,
-//   verifyAccessToken,
-// } from "../middlewares/verification";
+import { Router } from "express";
+import {
+  CREATE_ONE,
+  DECOMMISSION_ONE,
+  GET_ALL,
+  GET_ONE,
+  UPDATE_ONE,
+} from "../controllers/bus.controller";
+import { isAdmin, verifyAccessToken } from "../middlewares/verification";
 
-// const router = Router();
+const router = Router();
 
-// // Route for adding a new bus
-// router.post(
-//   "/",
-//   verifyAccessToken,
-//   isAdmin || isSuperAdmin,
-//   busController.addBus
-// );
+router.post("/create-one", verifyAccessToken, isAdmin, CREATE_ONE);
 
-// // Route for deleting a bus
-// router.delete("/:id", busController.deleteBus);
+router.post("/get-one", verifyAccessToken, isAdmin, GET_ONE);
 
-// // Route for updating a bus
-// router.put("/:id", busController.updateBus);
+router.post("/get-all", verifyAccessToken, isAdmin, GET_ALL);
 
-// // Route for fetching all buses
-// router.get("/", busController.getAllBuses);
+router.post("/update-one", verifyAccessToken, isAdmin, UPDATE_ONE);
 
-// // Route for fetching a single bus by ID
-// router.get("/:id", busController.getBusById);
+router.post("/decomission-one", verifyAccessToken, isAdmin, DECOMMISSION_ONE);
 
-// export default router;
+export default router;

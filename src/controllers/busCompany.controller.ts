@@ -26,7 +26,7 @@ export const CREATE_BUS_COMPANY = async (
       email: string;
     } = req.body;
 
-    if (!name || !mobileNumber || email || !req.file) {
+    if (!name || !mobileNumber || !email || !req.file) {
       return res
         .status(400)
         .json({ message: "Make sure all input fileds are correct" });
@@ -35,7 +35,7 @@ export const CREATE_BUS_COMPANY = async (
     const companyDocumentsUrl =
       await req.context.services?.firebaseStorage.uploadFile({
         file: req.file?.buffer,
-        fileName: req.file?.filename,
+        fileName: req.file?.originalname,
         folderName: "company_docs",
         mimeType: req.file?.mimetype,
       });
@@ -47,7 +47,7 @@ export const CREATE_BUS_COMPANY = async (
       companyDocuments: companyDocumentsUrl!,
     });
 
-    return busCompany;
+    return res.status(200).json(busCompany);
   } catch (e) {
     next(e);
   }
@@ -59,6 +59,18 @@ export const ACCEPT_BUS_COMPANY = async (
   next: NextFunction
 ) => {
   try {
+    const { companyID } = req.body;
+
+    if (!companyID) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+    const response = await req.context.services?.busCompany.acceptOne({
+      _id: companyID,
+    });
+
+    return res.status(200).json(response);
   } catch (e) {
     throw e;
   }
@@ -70,6 +82,18 @@ export const REJECT_BUS_COMPANY = async (
   next: NextFunction
 ) => {
   try {
+    const { companyID } = req.body;
+
+    if (!companyID) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+    const response = await req.context.services?.busCompany.rejectOne({
+      _id: companyID,
+    });
+
+    return res.status(200).json(response);
   } catch (e) {
     throw e;
   }

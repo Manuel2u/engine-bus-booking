@@ -11,6 +11,7 @@ import {
 import { sendEmail } from "../utils/email";
 import createError from "../utils/error";
 import { generatePassword } from "../utils/generatePassword";
+import { __generateQuery } from "../utils/query";
 
 export class BusCompanyService extends IService {
   constructor(context: IAppContext) {
@@ -24,7 +25,7 @@ export class BusCompanyService extends IService {
       });
 
       if (_BusCompany) {
-        createError("Bus Operator already exits", 400);
+        throw createError("Bus Operator already exits", 400);
       }
 
       const BusCompany = new this.db.BusCompanyModel({
@@ -51,15 +52,18 @@ export class BusCompanyService extends IService {
       });
 
       if (!_BusCompany) {
-        createError("Bus Company does not exist", 404);
+        throw createError("Bus Company does not exist", 404);
       }
 
       await _BusCompany?.updateOne({ $set: { status: "ACCEPTED" } });
 
       const randomPassowrd = generatePassword((length = 12));
+      const usersNameFirstLetter = _BusCompany?.name.split(" ")[0];
+
       const user = new this.db.AdminModel({
-        role: " BUS_COMPANY",
+        role: "BUS_COMPANY",
         fullName: _BusCompany?.name,
+        profilePicture: usersNameFirstLetter,
         phone: _BusCompany?.mobileNumber,
         email: _BusCompany?.email,
         busCompany: _BusCompany?._id,
@@ -93,7 +97,7 @@ export class BusCompanyService extends IService {
       });
 
       if (!_BusCompany) {
-        createError("Bus Company does not exist", 404);
+        throw createError("Bus Company does not exist", 404);
       }
 
       await _BusCompany?.updateOne({ $set: { status: "REJECTED" } });
@@ -113,23 +117,48 @@ export class BusCompanyService extends IService {
     }
   }
 
-  async getAll(): Promise<IbusCompanySchema[]> {
+  async getAll(input: {
+    skip: number;
+    limit: number;
+  }): Promise<IbusCompanySchema[]> {
+    const generatedQuery = __generateQuery("BusCompany", {
+      populate: [],
+      pagination: { skip: input.skip * input.limit, limit: input.limit },
+    });
+
     try {
-      const busCompanies = await this.db.BusCompanyModel.find();
+      const busCompanies = await this.db.BusCompanyModel.find()
+        .skip(generatedQuery.skip)
+        .limit(generatedQuery.limit);
       return busCompanies;
     } catch (e) {
       throw e;
     }
   }
 
-  async getOne(input: IGetBusCompany): Promise<IbusCompanySchema> {
+  async getOne(input: IGetBusCompany) {
+    const generatedQuery = __generateQuery("BusCompany", {
+      filter: { _id: { eq: input._id } },
+      populate: [],
+
+      pagination: { skip: input.skip * input.limit, limit: input.limit },
+      sort: { mobileNumber: "asc" },
+    });
+
+    console.log("Generated Query:", JSON.stringify(generatedQuery, null, 2));
+
     try {
-      const busCompany = await this.db.BusCompanyModel.findOne({
-        _id: input._id,
-      });
+      const busCompany = await this.db.BusCompanyModel.find(
+        generatedQuery.filter
+      )
+        .sort(generatedQuery.sort)
+        .skip(generatedQuery.skip)
+        .limit(generatedQuery.limit)
+        .populate(generatedQuery.populate)
+        .exec();
 
       if (!busCompany) {
-        throw createError("Bus Company does not exist", 404);
+        throw createError("Bus Company not found", 404);
       }
 
       return busCompany;

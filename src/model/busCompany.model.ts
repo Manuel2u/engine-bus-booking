@@ -39,10 +39,6 @@ const busCompanySchema = new Schema<IbusCompanySchema>({
       required: true,
     },
   ],
-  role: {
-    type: SchemaTypes.String,
-    required: true,
-  },
 
   Trips: [
     {

@@ -1,5 +1,6 @@
 import { Model, Document, Types } from "mongoose";
 
+/*********************** User **********************/
 export interface IUser {
   fullName: string;
   phone: string;
@@ -18,37 +19,32 @@ export interface IUser {
   comparePasswords(password: string): Promise<boolean>;
 }
 
-export interface IAdmin {
-  fullName: string;
-  phone: string;
-  email: string;
-  password: string;
-  busCompany: Types.ObjectId;
-  role: "ADMIN" | "BUS_COMPANY";
-  comparePasswords(password: string): Promise<boolean>;
-}
-
-export interface ISudoAdmin {
-  fullName: string;
-  phone: string;
-  email: string;
-  password: string;
-  role: "SUDOADMIN";
-  comparePasswords(password: string): Promise<boolean>;
-}
-
-export interface IUserwithoutPassWord {
+export interface IUserSchema extends IUser, Document {
   _id: Types.ObjectId;
-  fullName: string;
-  phone: string;
-  email: string;
-  isPhoneNumberVerified: boolean;
-  verificationCode?: Types.ObjectId;
   comparePasswords(password: string): Promise<boolean>;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+export interface IUserModel extends Model<IUserSchema> {}
+
+export interface IGetPhoneInput {
+  phone: string;
+  id: string;
+}
+
+export interface IVerifyPhoneInput {
+  id: Types.ObjectId;
+  code: number;
+}
+
+export interface IUserwithoutPassWord extends Omit<IUserSchema, "password"> {}
 
 export interface IUserAuth {
-  user: IUserwithoutPassWord;
+  user:
+    | IUserwithoutPassWord
+    | IAdminwithoutPassWord
+    | ISudoAdminwithoutPassWord;
   token?: string;
 }
 
@@ -63,21 +59,27 @@ export interface ISigninInput {
   password: string;
 }
 
-export interface IGetPhoneInput {
+/*********************** Admin **********************/
+
+export interface IAdmin {
+  fullName: string;
   phone: string;
-  id: string;
-}
-
-export interface IVerifyPhoneInput {
-  id: Types.ObjectId;
-  code: number;
-}
-
-export interface IUserSchema extends IUser, Document {
-  _id: Types.ObjectId;
+  email: string;
+  password: string;
+  profilePicture: string;
+  busCompany: Types.ObjectId;
+  role: "ADMIN" | "BUS_COMPANY";
   comparePasswords(password: string): Promise<boolean>;
-  createdAt: Date;
-  updatedAt: Date;
+}
+
+export interface IAdminwithoutPassWord extends Omit<IAdminSchema, "password"> {}
+
+export interface ICreateAdminInput {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  busCompany: Types.ObjectId;
 }
 
 export interface IAdminSchema extends IAdmin, Document {
@@ -87,6 +89,30 @@ export interface IAdminSchema extends IAdmin, Document {
   updatedAt: Date;
 }
 
+export interface IAdminModel extends Model<IAdminSchema> {}
+
+/*********************** SUDOADMIN **********************/
+
+export interface ISudoAdmin {
+  fullName: string;
+  phone: string;
+  email: string;
+  password: string;
+  profilePicture: string;
+  role: "SUDOADMIN";
+  comparePasswords(password: string): Promise<boolean>;
+}
+
+export interface ICreateSudoAdminInput {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+}
+
+export interface ISudoAdminwithoutPassWord
+  extends Omit<ISudoAdminSchema, "password"> {}
+
 export interface ISudoAdminSchema extends ISudoAdmin, Document {
   _id: Types.ObjectId;
   comparePasswords(password: string): Promise<boolean>;
@@ -95,12 +121,9 @@ export interface ISudoAdminSchema extends ISudoAdmin, Document {
 }
 
 export interface ISudoAdminModel extends Model<ISudoAdminSchema> {}
-export interface IAdminModel extends Model<IAdminSchema> {}
-export interface IUserModel extends Model<IUserSchema> {}
 
-export interface IUserInfo {
-  id: string;
-  email: string;
-  isAdmin: boolean;
-  accountNumber: number;
+export interface IJWT {
+  user: IUserSchema;
+  admin: IAdminSchema;
+  sudoadmin: ISudoAdminSchema;
 }

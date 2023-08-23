@@ -19,3 +19,5 @@ router.post(
 router.post("/accept-bus-company", isSudoAdmin, ACCEPT_BUS_COMPANY);
 
 router.post("/reject-bus-company", isSudoAdmin, REJECT_BUS_COMPANY);
+
+export default router;

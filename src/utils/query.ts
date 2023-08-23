@@ -1,4 +1,4 @@
-import { PopulateOptions } from "mongoose";
+import { PopulateOptions, SortOrder } from "mongoose";
 import {
   GenerateQueryInputProps,
   GenerateQueryOutputProps,
@@ -54,6 +54,29 @@ function buildOperation(operation: OperationInputProps): OperationOutputProps {
   return result as OperationOutputProps;
 }
 
+function buildPopulationOptions(
+  path: string,
+  skip: number,
+  limit: number
+): PopulateOptions {
+  const nestedPaths = path.split(".");
+  let nestedPopulateOption: PopulateOptions | undefined = undefined;
+
+  for (const nestedPath of nestedPaths.reverse()) {
+    const currentNestedOption: PopulateOptions = {
+      path: nestedPath,
+      options: { skip, limit },
+    };
+
+    if (nestedPopulateOption) {
+      currentNestedOption.populate = nestedPopulateOption;
+    }
+    nestedPopulateOption = currentNestedOption;
+  }
+
+  return nestedPopulateOption!;
+}
+
 export function __generateQuery(
   modelName: string,
   queryProps: GenerateQueryInputProps
@@ -66,11 +89,14 @@ export function __generateQuery(
     filter[field] = buildOperation(queryProps.filter[field]);
   }
 
-  const sort: object = queryProps.sort || {};
+  const sort: { [key: string]: SortOrder | { $meta: any } } =
+    queryProps.sort || {};
   const skip: number = queryProps.pagination?.skip || 0;
   const limit: number = queryProps.pagination?.limit || 0;
   const populate: PopulateOptions[] =
-    queryProps.populate?.map((field) => ({ path: field })) || [];
+    queryProps.populate?.map((field) =>
+      buildPopulationOptions(field, skip, limit)
+    ) || [];
 
   return {
     filter,
@@ -81,6 +107,19 @@ export function __generateQuery(
   };
 }
 
-export default {
-  __generateQuery,
-};
+// // ...
+
+// // ...
+
+// const queryProps = {
+//   filter: {
+//     email: { eq: "emmanueldodoo94@gmail.com" },
+//   },
+//   pagination: { skip: 0, limit: 10 },
+//   populate: ["Tickets", "Bookings.Trip", "Bookings.Bus"],
+//   sort: { email: "asc" as const },
+// };
+
+// const generatedQuery = __generateQuery("User", queryProps);
+
+// console.log("Generated Query:", JSON.stringify(generatedQuery, null, 2));

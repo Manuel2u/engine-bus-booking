@@ -1,6 +1,10 @@
 import { IAppContext, IService } from "../types/app";
 import {
+  IAdminwithoutPassWord,
+  ICreateAdminInput,
+  ICreateSudoAdminInput,
   ISigninInput,
+  ISudoAdminwithoutPassWord,
   IUserAuth,
   IUserInput,
   IUserwithoutPassWord,
@@ -48,69 +52,70 @@ export default class UserService extends IService {
     }
   }
 
-  async CreateAdmin(input: IUserInput): Promise<IUserAuth> {
+  async CreateAdmin(input: ICreateAdminInput): Promise<IUserAuth> {
     try {
-      const _user = await this.db.UserModel.findOne({
+      const _admin = await this.db.AdminModel.findOne({
         email: input.email,
       });
 
-      if (_user) {
+      if (_admin) {
         throw createError("User already exits", 400);
       }
       const usersNameFirstLetter = input.fullName.split(" ")[0];
 
-      const user = new this.db.UserModel({
+      const admin = new this.db.AdminModel({
         ...input,
+
         profilePic: usersNameFirstLetter,
         role: "ADMIN",
       });
-      await user.save();
+      await admin.save();
 
-      const savedUser = await this.db.UserModel.findById(user._id).select(
+      const savedAdmin = await this.db.AdminModel.findById(admin._id).select(
         "-password"
       );
 
-      const token = _generateToken(user);
-      const userAuth: IUserAuth = {
-        user: savedUser as IUserwithoutPassWord,
+      const token = _generateToken(admin);
+      const adminAuth: IUserAuth = {
+        user: savedAdmin as IAdminwithoutPassWord,
         token: token,
       };
 
-      return userAuth;
+      return adminAuth;
     } catch (e) {
       throw e;
     }
   }
 
-  async CreateSuperAdmin(input: IUserInput): Promise<IUserAuth> {
+  async CreateSudoAdmin(input: ICreateSudoAdminInput): Promise<IUserAuth> {
     try {
-      const _user = await this.db.UserModel.findOne({
+      const _sudoadmin = await this.db.AdminModel.findOne({
         email: input.email,
       });
 
-      if (_user) {
+      if (_sudoadmin) {
         throw createError("User already exits", 400);
       }
-      const usersNameFirstLetter = input.fullName.split(" ")[0];
+      const usersNameFirstLetter = input.fullName.split(" ")[0].split("")[0];
 
-      const user = new this.db.UserModel({
+      const sudoAdmin = new this.db.SudoAdminModel({
         ...input,
-        profilePic: usersNameFirstLetter,
-        role: "SUPERADMIN",
+        profilePicture: usersNameFirstLetter,
+        role: "SUDOADMIN",
       });
-      await user.save();
+      await sudoAdmin.save();
 
-      const savedUser = await this.db.UserModel.findById(user._id).select(
-        "-password"
-      );
+      const savedSudoAdmin = await this.db.SudoAdminModel.findById(
+        sudoAdmin._id
+      ).select("-password");
 
-      const token = _generateToken(user);
-      const userAuth: IUserAuth = {
-        user: savedUser as IUserwithoutPassWord,
+      const token = _generateToken(sudoAdmin);
+      const sudoAdminAuth: IUserAuth = {
+        user: savedSudoAdmin as ISudoAdminwithoutPassWord,
         token: token,
       };
 
-      return userAuth;
+      return sudoAdminAuth;
     } catch (e) {
       throw e;
     }
@@ -118,8 +123,7 @@ export default class UserService extends IService {
 
   /***************************Social Media Auth ****************************/
 
-  async SignUpWithGoogle(){
-  }
+  async SignUpWithGoogle() {}
 
   /***************************Social Media Auth ****************************/
 
@@ -151,7 +155,7 @@ export default class UserService extends IService {
     }
   }
 
-  async signIn(input: ISigninInput): Promise<IUserAuth | string> {
+  async signInUser(input: ISigninInput): Promise<IUserAuth | string> {
     try {
       const user = await this.db.UserModel.findOne({ email: input.email });
 
@@ -167,6 +171,60 @@ export default class UserService extends IService {
         const token = _generateToken(user);
         const userAuth: IUserAuth = {
           user: user as IUserwithoutPassWord,
+          token: token,
+        };
+
+        return userAuth;
+      }
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async signInAdmin(input: ISigninInput): Promise<IUserAuth | string> {
+    try {
+      const admin = await this.db.AdminModel.findOne({ email: input.email });
+
+      if (!admin) {
+        throw createError("User not found", 404);
+      }
+
+      const isPasswordValid = await admin.comparePasswords(input.password);
+
+      if (!isPasswordValid) {
+        return "Invalid password";
+      } else {
+        const token = _generateToken(admin);
+        const userAuth: IUserAuth = {
+          user: admin as IAdminwithoutPassWord,
+          token: token,
+        };
+
+        return userAuth;
+      }
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async signInSudoAdmin(input: ISigninInput): Promise<IUserAuth | string> {
+    try {
+      const sudoAdmin = await this.db.SudoAdminModel.findOne({
+        email: input.email,
+      });
+
+      if (!sudoAdmin) {
+        throw createError("User not found", 404);
+      }
+
+      const isPasswordValid = await sudoAdmin.comparePasswords(input.password);
+
+      if (!isPasswordValid) {
+        return "Invalid password";
+      } else {
+        const token = _generateToken(sudoAdmin);
+        const userAuth: IUserAuth = {
+          user: sudoAdmin as ISudoAdminwithoutPassWord,
           token: token,
         };
 

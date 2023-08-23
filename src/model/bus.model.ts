@@ -37,6 +37,14 @@ const BusSchema = new Schema<IBusSchema>(
       type: SchemaTypes.String,
       required: true,
     },
+    user: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+    },
+    busCompany: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+    },
   },
   { timestamps: true }
 );

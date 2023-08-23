@@ -6,7 +6,7 @@ import {
   VERIFYPHONE,
   RESEND,
   CREATEADMIN,
-  CREATESUPERADMIN,
+  CREATESUDOADMIN,
   GOOGLE,
 } from "../controllers/user.controller";
 import { verifyAccessToken } from "../middlewares/verification";
@@ -19,9 +19,13 @@ router.post("/signup", SIGNUP);
 
 router.post("/createadmin", CREATEADMIN);
 
-router.post("/createsuperadmin", CREATESUPERADMIN);
+router.post("/createsudoadmin", CREATESUDOADMIN);
 
-router.post("/signin", SIGNIN);
+router.post("/signinuser", SIGNIN);
+
+router.post("/signin-admin", SIGNIN);
+
+router.post("/signin-sudo-admin", SIGNIN);
 
 router.post("/verifyphone", verifyAccessToken, VERIFYPHONE);
 

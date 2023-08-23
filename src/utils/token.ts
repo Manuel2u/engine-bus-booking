@@ -1,10 +1,19 @@
 import jwt from "jsonwebtoken";
-import { IUser, IUserSchema } from "../types/user";
+import {
+  IAdminSchema,
+  ISudoAdminSchema,
+  IUser,
+  IUserSchema,
+} from "../types/user";
 import { config } from "../config";
 
-export const _generateToken = (user: IUserSchema) => {
+export const _generateToken = (
+  user: IUserSchema | IAdminSchema | ISudoAdminSchema | any
+) => {
   try {
-    const token = jwt.sign({ id: user._id }, config.auth.secret, {expiresIn : config.auth.expiresIn});
+    const token = jwt.sign({ user: user }, config.auth.secret, {
+      expiresIn: config.auth.expiresIn,
+    });
     return token;
   } catch (e) {
     throw e;

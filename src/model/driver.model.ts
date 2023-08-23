@@ -37,6 +37,16 @@ const driverSchema = new Schema<IDriverSchema>(
     profilePicture: {
       type: SchemaTypes.String,
     },
+    busCompany: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "BusCompany",
+    },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "Admin",
+    },
   },
   { timestamps: true }
 );

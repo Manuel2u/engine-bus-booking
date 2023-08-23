@@ -7,6 +7,9 @@ import { initializeApp } from "firebase/app";
 import config from "../services/firebase/config/firebase.config";
 import FireBaseStorage from "./firebase/storage/uploadFile";
 import { BusCompanyService } from "./busCompany";
+import oAuthService from "./passport/oAuth";
+import { BusService } from "./bus";
+import { DriverService } from "./driver";
 
 export interface IServices {
   user: UserService;
@@ -14,6 +17,9 @@ export interface IServices {
   firebaseAuth: FirebaseAuth;
   firebaseStorage: FireBaseStorage;
   busCompany: BusCompanyService;
+  oAuth: oAuthService;
+  bus: BusService;
+  driver: DriverService;
 }
 
 export default async function initServices(context: IAppContext) {
@@ -24,6 +30,9 @@ export default async function initServices(context: IAppContext) {
       busCompany: new BusCompanyService(context),
       code: new Code(context),
       firebaseAuth: new FirebaseAuth(context),
+      oAuth: new oAuthService(context),
+      bus: new BusService(context),
+      driver: new DriverService(context),
       firebaseStorage: new FireBaseStorage(context),
     };
   } catch (e) {
