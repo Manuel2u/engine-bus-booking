@@ -37,13 +37,15 @@ const BusSchema = new Schema<IBusSchema>(
       type: SchemaTypes.String,
       required: true,
     },
-    user: {
+    createdBy: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: "Admin",
     },
     busCompany: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: "BusCompany",
     },
   },
   { timestamps: true }

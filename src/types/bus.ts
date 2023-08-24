@@ -8,7 +8,7 @@ export interface IBus {
   numberOfSeats: string;
   status: "ACTIVE" | "INACTIVE";
   insurance: string;
-  user: Types.ObjectId;
+  createdBy: Types.ObjectId;
   busCompany: Types.ObjectId;
   roadWorthy: string;
 }

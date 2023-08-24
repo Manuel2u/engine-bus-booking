@@ -10,6 +10,7 @@ import { BusCompanyService } from "./busCompany";
 import oAuthService from "./passport/oAuth";
 import { BusService } from "./bus";
 import { DriverService } from "./driver";
+import { TripService } from "./trip";
 
 export interface IServices {
   user: UserService;
@@ -20,6 +21,7 @@ export interface IServices {
   oAuth: oAuthService;
   bus: BusService;
   driver: DriverService;
+  trip: TripService;
 }
 
 export default async function initServices(context: IAppContext) {
@@ -33,6 +35,7 @@ export default async function initServices(context: IAppContext) {
       oAuth: new oAuthService(context),
       bus: new BusService(context),
       driver: new DriverService(context),
+      trip: new TripService(context),
       firebaseStorage: new FireBaseStorage(context),
     };
   } catch (e) {

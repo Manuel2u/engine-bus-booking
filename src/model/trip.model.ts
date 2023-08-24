@@ -29,11 +29,22 @@ const TripSchema = new Schema<ITripSchema>(
     },
     tripStatus: {
       type: SchemaTypes.String,
+      enum: ["CANCELLED", "ACTIVE"],
       required: true,
     },
     tripType: {
       type: SchemaTypes.String,
       required: true,
+    },
+    busCompany: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "BusCompany",
+    },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "Admin",
     },
   },
   { timestamps: true }
