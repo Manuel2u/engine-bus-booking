@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  isAdmin,
+  isAdminOrSuperAdmin,
   isPhoneNumberVerified,
   verifyAccessToken,
 } from "../middlewares/verification";
@@ -16,18 +16,23 @@ import {
 
 const router = Router();
 
-router.post("/create-one", verifyAccessToken, isAdmin, CREATE_ONE);
+router.post("/create-one", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
 
-router.post("/get-one", verifyAccessToken, isAdmin, GET_ONE);
+router.post("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-router.post("/get-all", verifyAccessToken, isAdmin, GET_ALL);
+router.post("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.post("/update-one", verifyAccessToken, isAdmin, UPDATE_ONE);
+router.post("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-router.post("/cancel-one", verifyAccessToken, isAdmin, CANCEL_ONE);
+router.post("/cancel-one", verifyAccessToken, isAdminOrSuperAdmin, CANCEL_ONE);
 
-router.post("/restore-one", verifyAccessToken, isAdmin, RESTORE_ONE);
+router.post(
+  "/restore-one",
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  RESTORE_ONE
+);
 
-router.post("/delete-one", verifyAccessToken, isAdmin, DELETE_ONE);
+router.post("/delete-one", verifyAccessToken, isAdminOrSuperAdmin, DELETE_ONE);
 
 export default router;

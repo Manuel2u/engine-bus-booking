@@ -4,7 +4,11 @@ import {
   CREATE_BUS_COMPANY,
   REJECT_BUS_COMPANY,
 } from "../controllers/busCompany.controller";
-import { isSudoAdmin, isSuperAdmin } from "../middlewares/verification";
+import {
+  isSudoAdmin,
+  isSuperAdmin,
+  verifyAccessToken,
+} from "../middlewares/verification";
 import multer from "multer";
 
 const router = Router();
@@ -16,7 +20,12 @@ router.post(
   CREATE_BUS_COMPANY
 );
 
-router.post("/accept-bus-company", isSudoAdmin, ACCEPT_BUS_COMPANY);
+router.post(
+  "/accept-bus-company",
+  verifyAccessToken,
+  isSudoAdmin,
+  ACCEPT_BUS_COMPANY
+);
 
 router.post("/reject-bus-company", isSudoAdmin, REJECT_BUS_COMPANY);
 

@@ -57,8 +57,8 @@ export class BusCompanyService extends IService {
 
       await _BusCompany?.updateOne({ $set: { status: "ACCEPTED" } });
 
-      const randomPassowrd = generatePassword((length = 12));
-      const usersNameFirstLetter = _BusCompany?.name.split(" ")[0];
+      const randomPassowrd = generatePassword(12);
+      const usersNameFirstLetter = _BusCompany?.name.split(" ")[0].split("")[0];
 
       const user = new this.db.AdminModel({
         role: "BUS_COMPANY",

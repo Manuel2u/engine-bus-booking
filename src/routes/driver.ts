@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  isAdmin,
+  isAdminOrSuperAdmin,
   isPhoneNumberVerified,
   verifyAccessToken,
 } from "../middlewares/verification";
@@ -24,16 +24,16 @@ router.post(
     { name: "profilePic", maxCount: 1 },
   ]),
   verifyAccessToken,
-  isAdmin,
+  isAdminOrSuperAdmin,
   CREATE_ONE
 );
 
-router.post("/get-one", verifyAccessToken, isAdmin, GET_ONE);
+router.post("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-router.post("/get-all", verifyAccessToken, isAdmin, GET_ALL);
+router.post("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.post("/update-one", verifyAccessToken, isAdmin, UPDATE_ONE);
+router.post("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-router.post("/decomission-one", verifyAccessToken, isAdmin, RETIRE_ONE);
+router.post("/retire-one", verifyAccessToken, isAdminOrSuperAdmin, RETIRE_ONE);
 
 export default router;

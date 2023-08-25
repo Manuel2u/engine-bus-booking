@@ -167,7 +167,7 @@ export const VERIFYPHONE = async (
 
 /***************************** SIGN IN ******************************/
 
-export const SIGNIN = async (
+export const SIGNIN_USER = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -182,6 +182,56 @@ export const SIGNIN = async (
     }
 
     const user = await req.context.services?.user.signInUser({
+      email,
+      password,
+    });
+
+    return res.status(200).json(user);
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const SIGNIN_ADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const user = await req.context.services?.user.signInAdmin({
+      email,
+      password,
+    });
+
+    return res.status(200).json(user);
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const SIGNIN_SUDOADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const user = await req.context.services?.user.signInSudoAdmin({
       email,
       password,
     });

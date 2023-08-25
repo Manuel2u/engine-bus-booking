@@ -47,11 +47,21 @@ export const CREATE_ONE = async (
         .json({ message: "Make sure all input fileds are correct" });
     }
 
+    // NB : we might add a bUs field to the driver
+
     if (licenseFile.mimetype != "application/pdf") {
+      console.log(licenseFile.mimetype);
+
       return res.status(400).json({ message: "File type not accepted" });
     }
 
-    if (profilePicFile.mimetype != "image/jpeg" || "image/jpg" || "image/png") {
+    if (
+      profilePicFile.mimetype !== "image/jpeg" &&
+      profilePicFile.mimetype !== "image/jpg" &&
+      profilePicFile.mimetype !== "image/png"
+    ) {
+      console.log(profilePicFile.mimetype);
+
       return res.status(400).json({ message: "File type not accepted" });
     }
 
@@ -114,8 +124,13 @@ export const GET_ONE = async (
   try {
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
+    const id = req.query.id;
 
-    const response = await req.context.services?.driver.getOne({ limit, skip });
+    const response = await req.context.services?.driver.getOne({
+      limit,
+      skip,
+      filter: id,
+    });
 
     return res.status(200).json(response);
   } catch (e) {

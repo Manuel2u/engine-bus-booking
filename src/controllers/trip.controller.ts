@@ -49,7 +49,7 @@ export const CREATE_ONE = async (
       destination,
       tripStatus,
       tripType,
-      createdBy: req.user.user._id,
+      createdBy: req.user._id,
       busCompany: req.user.busCompany,
     });
 
@@ -84,8 +84,13 @@ export const GET_ONE = async (
   try {
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
+    const id = req.query.id;
 
-    const response = await req.context.services?.trip.getOne({ limit, skip });
+    const response = await req.context.services?.trip.getOne({
+      limit,
+      skip,
+      filter: id,
+    });
 
     return res.status(200).json(response);
   } catch (e) {

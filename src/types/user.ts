@@ -13,7 +13,6 @@ export interface IUser {
   googleID?: string;
   appleID?: string;
   faceBookID?: string;
-  busCompany?: string;
   Bookings: Types.ObjectId[];
   Tickets: Types.ObjectId[];
   comparePasswords(password: string): Promise<boolean>;

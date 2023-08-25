@@ -6,10 +6,16 @@ const TicketsSchema = new Schema<ITicketSchema>(
     Booking: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: "Booking",
     },
     QRCode: {
       type: SchemaTypes.String,
       required: true,
+    },
+    user: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "User",
     },
   },
   { timestamps: true }

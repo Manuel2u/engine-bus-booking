@@ -39,7 +39,9 @@ export const verifyAccessToken = async (
         if (err) {
           next(createError("Token expired", 401));
         }
-        req.user = decoded;
+        const { user } = decoded;
+        req.user = user;
+        console.log(req.user);
       }
     );
 
@@ -49,11 +51,15 @@ export const verifyAccessToken = async (
   }
 };
 
-export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+export const isAdminOrSuperAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const user = req.user as IAdminSchema;
   console.log(req.user);
 
-  if (user.role === "ADMIN") {
+  if (user.role === "ADMIN" || user.role === "BUS_COMPANY") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });

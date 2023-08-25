@@ -21,7 +21,7 @@ export default class FireBaseStorage extends IService {
 
       const storageRef = ref(
         storage,
-        `${input.folderName}/${dateTime}${input.fileName}`
+        `${input.folderName}/${dateTime}-${input.fileName}`
       );
 
       const metadata = {

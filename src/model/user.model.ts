@@ -40,13 +40,13 @@ const UserSchema = new Schema<IUserSchema>(
     Bookings: [
       {
         type: SchemaTypes.ObjectId,
-        ref: "Bookings",
+        ref: "Booking",
       },
     ],
     Tickets: [
       {
         type: SchemaTypes.ObjectId,
-        ref: "Tickets",
+        ref: "Ticket",
       },
     ],
     role: {

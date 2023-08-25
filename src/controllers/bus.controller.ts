@@ -21,9 +21,15 @@ export const CREATE_ONE = async (
       colour,
       numberOfSeats,
       status,
-      insurance,
       roadWorthy,
     }: IcreateBusRequestBody = req.body;
+
+    const insuranceFile = Array.isArray(req.files)
+      ? req.files[0]
+      : req.files?.["insurance"][0];
+    const roadWorthyFile = Array.isArray(req.files)
+      ? req.files[1]
+      : req.files?.["roadWorthy"][0];
 
     if (
       !vehicleNumber ||
@@ -32,13 +38,37 @@ export const CREATE_ONE = async (
       !yearOfMake ||
       !colour ||
       !status ||
-      !insurance ||
-      !roadWorthy
+      !insuranceFile ||
+      !roadWorthyFile
     ) {
       return res
         .status(400)
         .json({ message: "Make sure all input fileds are correct" });
     }
+
+    if (
+      insuranceFile.mimetype &&
+      roadWorthyFile.mimetype != "application/pdf"
+    ) {
+      return res.status(400).json({ message: "File type not accepted" });
+    }
+
+    const insuranceUrl = await req.context.services?.firebaseStorage.uploadFile(
+      {
+        file: insuranceFile.buffer,
+        fileName: insuranceFile.originalname,
+        folderName: "insurance",
+        mimeType: insuranceFile.mimetype,
+      }
+    );
+
+    const roadWorthyUrl =
+      await req.context.services?.firebaseStorage.uploadFile({
+        file: roadWorthyFile.buffer,
+        fileName: roadWorthyFile.originalname,
+        folderName: "roadWorthy",
+        mimeType: roadWorthyFile.mimetype,
+      });
 
     const _bus = await req.context.services?.bus.createOne({
       vehicleNumber,
@@ -48,8 +78,8 @@ export const CREATE_ONE = async (
       colour,
       numberOfSeats,
       status,
-      insurance,
-      roadWorthy,
+      insurance: insuranceUrl!,
+      roadWorthy: roadWorthyUrl!,
       busCompany: req.user.busCompany,
     });
 
@@ -84,8 +114,13 @@ export const GET_ONE = async (
   try {
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
+    const id = req.query.id;
 
-    const response = await req.context.services?.bus.getOne({ limit, skip });
+    const response = await req.context.services?.bus.getOne({
+      limit,
+      skip,
+      filter: id,
+    });
 
     return res.status(200).json(response);
   } catch (e) {

@@ -61,12 +61,12 @@ export default class UserService extends IService {
       if (_admin) {
         throw createError("User already exits", 400);
       }
-      const usersNameFirstLetter = input.fullName.split(" ")[0];
+      const usersNameFirstLetter = input.fullName.split(" ")[0].split("")[0];
 
       const admin = new this.db.AdminModel({
         ...input,
 
-        profilePic: usersNameFirstLetter,
+        profilePicture: usersNameFirstLetter,
         role: "ADMIN",
       });
       await admin.save();
