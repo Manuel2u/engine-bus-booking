@@ -2,14 +2,16 @@ import { Router } from "express";
 
 import {
   SIGNUP,
-  SIGNIN,
   VERIFYPHONE,
   RESEND,
   CREATEADMIN,
-  CREATESUPERADMIN,
+  CREATESUDOADMIN,
   GOOGLE,
+  SIGNIN_USER,
+  SIGNIN_ADMIN,
+  SIGNIN_SUDOADMIN,
 } from "../controllers/user.controller";
-import { verifyAccessToken } from "../middlewares/verification";
+import { isSuperAdmin, verifyAccessToken } from "../middlewares/verification";
 import passport from "passport";
 import { initializeGoogleStrategy } from "../middlewares/initializeOAuth";
 
@@ -17,11 +19,15 @@ const router = Router();
 
 router.post("/signup", SIGNUP);
 
-router.post("/createadmin", CREATEADMIN);
+router.post("/createadmin", verifyAccessToken, isSuperAdmin, CREATEADMIN);
 
-router.post("/createsuperadmin", CREATESUPERADMIN);
+router.post("/createsudoadmin", CREATESUDOADMIN);
 
-router.post("/signin", SIGNIN);
+router.post("/signinuser", SIGNIN_USER);
+
+router.post("/signin-admin", SIGNIN_ADMIN);
+
+router.post("/signin-sudo-admin", SIGNIN_SUDOADMIN);
 
 router.post("/verifyphone", verifyAccessToken, VERIFYPHONE);
 

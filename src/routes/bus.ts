@@ -1,31 +1,43 @@
-// import { Router } from "express";
-// import * as busController from "../controllers/bus.controller";
-// import {
-//   isAdmin,
-//   isSuperAdmin,
-//   verifyAccessToken,
-// } from "../middlewares/verification";
+import { Router } from "express";
+import {
+  CREATE_ONE,
+  DECOMMISSION_ONE,
+  GET_ALL,
+  GET_ONE,
+  UPDATE_ONE,
+} from "../controllers/bus.controller";
+import {
+  isAdminOrSuperAdmin,
+  verifyAccessToken,
+} from "../middlewares/verification";
 
-// const router = Router();
+import multer from "multer";
 
-// // Route for adding a new bus
-// router.post(
-//   "/",
-//   verifyAccessToken,
-//   isAdmin || isSuperAdmin,
-//   busController.addBus
-// );
+const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-// // Route for deleting a bus
-// router.delete("/:id", busController.deleteBus);
+router.post(
+  "/create-one",
+  upload.fields([
+    { name: "insurance", maxCount: 1 },
+    { name: "roadWorthy", maxCount: 1 },
+  ]),
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  CREATE_ONE
+);
 
-// // Route for updating a bus
-// router.put("/:id", busController.updateBus);
+router.get("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-// // Route for fetching all buses
-// router.get("/", busController.getAllBuses);
+router.get("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-// // Route for fetching a single bus by ID
-// router.get("/:id", busController.getBusById);
+router.post("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-// export default router;
+router.post(
+  "/decomission-one",
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  DECOMMISSION_ONE
+);
+
+export default router;

@@ -7,6 +7,15 @@ export interface IBookings {
   numOfSeats: number;
 }
 
+export interface IcreateBookingsInput extends IBookings {}
+
+export interface IBookATrip {
+  userid: Types.ObjectId;
+  bookingid: Types.ObjectId;
+}
+
+export interface IcreateBookingRequestBody extends Omit<IBookings, "user"> {}
+
 export interface IBookingsSchema extends IBookings, Document {
   _id: Types.ObjectId;
   createdAt: string;

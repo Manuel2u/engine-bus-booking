@@ -26,6 +26,7 @@ const BusSchema = new Schema<IBusSchema>(
     },
     status: {
       type: SchemaTypes.String,
+      enum: ["ACTIVE", "INACTIVE", "DECOMMISSIONED"],
       required: true,
     },
     insurance: {
@@ -35,6 +36,16 @@ const BusSchema = new Schema<IBusSchema>(
     roadWorthy: {
       type: SchemaTypes.String,
       required: true,
+    },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "Admin",
+    },
+    busCompany: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "BusCompany",
     },
   },
   { timestamps: true }

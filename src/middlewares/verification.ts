@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
-import { IUser, IUserSchema } from "../types/user";
+import {
+  IAdminSchema,
+  ISudoAdminSchema,
+  IUser,
+  IUserSchema,
+} from "../types/user";
 dotenv.config();
 
 import createError from "../utils/error";
@@ -9,7 +14,7 @@ import { initialize } from "passport";
 
 declare module "express-serve-static-core" {
   interface Request {
-    user: IUserSchema;
+    user: IAdminSchema | IUserSchema | ISudoAdminSchema | any;
   }
 }
 
@@ -34,7 +39,9 @@ export const verifyAccessToken = async (
         if (err) {
           next(createError("Token expired", 401));
         }
-        req.user = decoded;
+        const { user } = decoded;
+        req.user = user;
+        console.log(req.user);
       }
     );
 
@@ -44,10 +51,15 @@ export const verifyAccessToken = async (
   }
 };
 
-export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user as IUser;
+export const isAdminOrSuperAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as IAdminSchema;
+  console.log(req.user);
 
-  if (user.role === "ADMIN") {
+  if (user.role === "ADMIN" || user.role === "BUS_COMPANY") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -59,9 +71,25 @@ export const isSuperAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user as IUser;
+  const user = req.user as IAdminSchema;
+  console.log(req.user);
 
-  if (user.role === "SUPERADMIN") {
+  if (user.role === "BUS_COMPANY") {
+    next();
+  } else {
+    return res.status(401).json({ message: "User is unauthorized" });
+  }
+};
+
+export const isSudoAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as ISudoAdminSchema;
+  console.log(req.user);
+
+  if (user.role === "SUDOADMIN") {
     next();
   } else {
     return res.status(401).json({ message: "User is unauthorized" });
@@ -81,4 +109,3 @@ export const isPhoneNumberVerified = (
     return res.status(401).json({ message: "Phone number not verified" });
   }
 };
-

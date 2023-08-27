@@ -6,9 +6,20 @@ const TicketsSchema = new Schema<ITicketSchema>(
     Booking: {
       type: SchemaTypes.ObjectId,
       required: true,
+      ref: "Booking",
     },
     QRCode: {
       type: SchemaTypes.String,
+      required: true,
+    },
+    user: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    status: {
+      type: SchemaTypes.String,
+      enum: ["VALID", "INVALID"],
       required: true,
     },
   },

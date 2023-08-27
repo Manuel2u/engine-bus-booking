@@ -29,8 +29,23 @@ const driverSchema = new Schema<IDriverSchema>(
       type: SchemaTypes.String,
       required: true,
     },
+    status: {
+      type: SchemaTypes.String,
+      enum: ["ACTIVE", "INACTIVE", "RETIRED"],
+      required: true,
+    },
     profilePicture: {
       type: SchemaTypes.String,
+    },
+    busCompany: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "BusCompany",
+    },
+    createdBy: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "Admin",
     },
   },
   { timestamps: true }
