@@ -34,16 +34,14 @@ function buildOperation(operation: OperationInputProps): OperationOutputProps {
       const value = operation[key as keyof OperationInputProps];
       if (key === "notIn") {
         result[operatorKey] = { $nin: value as ValueTypes[keyof ValueTypes][] };
-      } else if (
-        key === "contains" ||
-        key === "notContains" ||
-        key === "regex"
-      ) {
+      } else if (key === "contains" || key === "notContains") {
         if (typeof value === "string") {
-          result[operatorKey] = {
-            $regex: `.*${value}.*`,
-            $options: "i",
-          };
+          result[operatorKey] = `.*${value}.*`;
+        }
+      } else if (key === "regex") {
+        if (typeof value === "string") {
+          result[operatorKey] = value;
+          result["$options"] = "i"; // Add the case-insensitive option
         }
       } else {
         result[operatorKey] = value;
