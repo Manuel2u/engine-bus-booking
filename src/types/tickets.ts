@@ -4,6 +4,7 @@ export interface ITicket {
   Booking: Types.ObjectId;
   QRCode: string;
   user: Types.ObjectId;
+  status: "VALID" | "INVALID";
 }
 
 export interface IcreateTicketInput extends ITicket {}

@@ -37,18 +37,14 @@ const UserSchema = new Schema<IUserSchema>(
     appleID: {
       type: SchemaTypes.String,
     },
-    Bookings: [
-      {
-        type: SchemaTypes.ObjectId,
-        ref: "Booking",
-      },
-    ],
-    Tickets: [
-      {
-        type: SchemaTypes.ObjectId,
-        ref: "Ticket",
-      },
-    ],
+    Bookings: {
+      type: [SchemaTypes.ObjectId],
+      ref: "Booking",
+    },
+    Tickets: {
+      type: [SchemaTypes.ObjectId],
+      ref: "Ticket",
+    },
     role: {
       type: SchemaTypes.String,
       enum: ["USER"],
@@ -57,6 +53,8 @@ const UserSchema = new Schema<IUserSchema>(
   },
   { timestamps: true }
 );
+
+// i might remove the booking and ticket from the user schema and rather keep a user field in the booking and ticket schema
 
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

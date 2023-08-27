@@ -1,4 +1,6 @@
-import { Model, Document, Types } from "mongoose";
+import { Model, Document, Types, PopulatedDoc } from "mongoose";
+import { IBookings } from "./bookings";
+import { ITicket } from "./tickets";
 
 /*********************** User **********************/
 export interface IUser {
@@ -13,8 +15,8 @@ export interface IUser {
   googleID?: string;
   appleID?: string;
   faceBookID?: string;
-  Bookings: Types.ObjectId[];
-  Tickets: Types.ObjectId[];
+  Bookings: PopulatedDoc<IBookings>;
+  Tickets: PopulatedDoc<ITicket>;
   comparePasswords(password: string): Promise<boolean>;
 }
 

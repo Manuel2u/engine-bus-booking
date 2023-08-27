@@ -17,6 +17,11 @@ const TicketsSchema = new Schema<ITicketSchema>(
       required: true,
       ref: "User",
     },
+    status: {
+      type: SchemaTypes.String,
+      enum: ["VALID", "INVALID"],
+      required: true,
+    },
   },
   { timestamps: true }
 );
