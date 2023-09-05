@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import customError from "../middlewares/customError";
+import passport from "passport";
 const app = express();
 
 /************ Import Routes *************/
@@ -24,6 +25,7 @@ export const start = async (config: Config) => {
   try {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    // app.use(passport.initialize());
     app.use(cookieParser());
 
     const appContext: IAppContext = {};

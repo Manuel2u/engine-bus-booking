@@ -1,4 +1,5 @@
-import { Document, Model, Types } from "mongoose";
+import { Document, Model, PopulatedDoc, Types } from "mongoose";
+import { IBus } from "./bus";
 
 export interface ITrip {
   date: Date;
@@ -10,6 +11,8 @@ export interface ITrip {
   tripStatus: "CANCELLED" | "ACTIVE";
   tripType: string;
   busCompany: Types.ObjectId;
+  bus: PopulatedDoc<IBus>;
+  price: String;
   createdBy: Types.ObjectId;
 }
 

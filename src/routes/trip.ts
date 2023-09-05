@@ -22,7 +22,7 @@ router.post("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
 router.post("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.post("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
+router.patch("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
 router.post("/cancel-one", verifyAccessToken, isAdminOrSuperAdmin, CANCEL_ONE);
 

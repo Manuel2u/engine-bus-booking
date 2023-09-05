@@ -23,6 +23,8 @@ export const CREATE_ONE = async (
       origin,
       tripStatus,
       tripType,
+      bus,
+      price,
     }: IcreateTripRequestBody = req.body;
 
     if (
@@ -33,7 +35,9 @@ export const CREATE_ONE = async (
       !numberOfBusAssigned ||
       !origin ||
       !tripStatus ||
-      !tripType
+      !tripType ||
+      !price ||
+      !bus
     ) {
       return res
         .status(400)
@@ -49,6 +53,8 @@ export const CREATE_ONE = async (
       destination,
       tripStatus,
       tripType,
+      price,
+      bus,
       createdBy: req.user._id,
       busCompany: req.user.busCompany,
     });

@@ -27,7 +27,7 @@ export default class UserService extends IService {
       if (_user) {
         throw createError("User already exits", 400);
       }
-      const usersNameFirstLetter = input.fullName.split(" ")[0];
+      const usersNameFirstLetter = input.fullName.split(" ")[0].split("")[0];
 
       const user = new this.db.UserModel({
         ...input,

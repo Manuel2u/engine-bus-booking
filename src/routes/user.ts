@@ -36,14 +36,17 @@ router.get("/resendsms", verifyAccessToken, RESEND);
 router.get(
   "/google/redirect",
   initializeGoogleStrategy,
-  passport.authenticate("google"),
+  passport.authenticate("google", { session: false }),
   GOOGLE
 );
 
 router.get(
   "/google",
   initializeGoogleStrategy,
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", {
+    session: false,
+    scope: ["profile", "email"],
+  })
 );
 
 export default router;

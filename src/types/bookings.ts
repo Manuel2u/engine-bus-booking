@@ -1,7 +1,6 @@
 import { Document, Model, Types } from "mongoose";
 
 export interface IBookings {
-  Bus: Types.ObjectId;
   Trip: Types.ObjectId;
   User: Types.ObjectId;
   numOfSeats: number;

@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import { config } from "../config";
 import sendSMS from "../utils/sms";
 import { user } from "firebase-functions/v1/auth";
-import { ICreateAdminInput, ICreateSudoAdminInput } from "../types/user";
+import {
+  ICreateAdminInput,
+  ICreateSudoAdminInput,
+  IUserAuth,
+} from "../types/user";
+import { _generateToken } from "../utils/token";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -250,18 +255,15 @@ export const GOOGLE = async (
   next: NextFunction
 ) => {
   try {
-    // const { email, fullName, phone } = req.body;
-    // if (!email || !fullName || !phone) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Make sure all input fileds are correct" });
-    // }
-    // const user = await req.context.services?.user.google({
-    //   email,
-    //   fullName,
-    //   phone,
-    // });
-    // return res.status(200).json(user);
+    const user = req.user;
+    const token = _generateToken(user);
+
+    const response: IUserAuth = {
+      user,
+      token,
+    };
+
+    return res.status(200).json(response);
   } catch (e) {
     next(e);
   }
