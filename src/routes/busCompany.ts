@@ -9,16 +9,10 @@ import {
   isSuperAdmin,
   verifyAccessToken,
 } from "../middlewares/verification";
-import multer from "multer";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
-router.post(
-  "/create-bus-company",
-  upload.single("companyDocs"),
-  CREATE_BUS_COMPANY
-);
+router.post("/bus-company", CREATE_BUS_COMPANY);
 
 router.post(
   "/accept-bus-company",

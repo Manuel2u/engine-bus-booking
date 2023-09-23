@@ -30,7 +30,10 @@ export interface IDecomissionBus {
   _id: Types.ObjectId;
 }
 
-export interface IcreateBusRequestBody extends Omit<IBus, "user"> {}
+export interface IcreateBusRequestBody extends Omit<IBus, "user"> {
+  roadWorthyFileUrl: string;
+  insuranceFileUrl: string;
+}
 
 export interface IBusSchema extends IBus, Document {
   _id: Types.ObjectId;

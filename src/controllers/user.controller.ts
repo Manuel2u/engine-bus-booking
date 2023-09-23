@@ -70,9 +70,10 @@ export const CREATEADMIN = async (
     const { email, fullName, password, phone }: ICreateAdminInput = req.body;
 
     if (!email || !fullName || !password || !phone) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     const _user = await req.context.services?.user.CreateAdmin({
@@ -88,7 +89,7 @@ export const CREATEADMIN = async (
 
     // sendSMS(phone, message);
 
-    return res.status(200).json(_user);
+    return res.status(200).json({ status: "success", data: _user });
   } catch (e) {
     next(e);
   }
@@ -116,7 +117,7 @@ export const CREATESUDOADMIN = async (
       phone,
     });
 
-    return res.status(200).json(_user);
+    return res.status(200).json({ status: "success", data: _user });
   } catch (e) {
     next(e);
   }
@@ -135,7 +136,9 @@ export const RESEND = async (
 
     sendSMS(req.user.phone, message);
 
-    return res.status(200).json("code resent succesfully");
+    return res
+      .status(200)
+      .json({ status: "success", message: "code resent succesfully" });
   } catch (e) {
     next(e);
   }
@@ -151,18 +154,20 @@ export const VERIFYPHONE = async (
   try {
     const { code }: { code: number } = req.body;
 
+    const { user } = req;
+
     if (!code) {
       return res
         .status(400)
-        .json({ message: "Please input verification code" });
+        .json({ status: "failed", message: "Please input verification code" });
     }
 
     const response = await req.context.services?.user.verifyCode({
       code: code,
-      id: req.user.id,
+      id: user._id,
     });
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json({ status: "success", message: response });
   } catch (e) {
     next(e);
   }
@@ -181,9 +186,10 @@ export const SIGNIN_USER = async (
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     const user = await req.context.services?.user.signInUser({
@@ -191,7 +197,7 @@ export const SIGNIN_USER = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }
@@ -216,7 +222,7 @@ export const SIGNIN_ADMIN = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }
@@ -241,7 +247,7 @@ export const SIGNIN_SUDOADMIN = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }

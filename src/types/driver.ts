@@ -21,10 +21,7 @@ export interface IUpdateDriverInput {
 }
 
 export interface IcreateDriverRequestBody
-  extends Omit<
-    IDriver,
-    "license" | "profilePicture" | "busCompany" | "createdBy"
-  > {}
+  extends Omit<IDriver, "busCompany" | "createdBy"> {}
 export interface IQueryDriver {
   skip: number;
   limit: number;

@@ -136,7 +136,7 @@ export default class UserService extends IService {
       }
 
       if (code.code.toString() !== input.code.toString()) {
-        return "Incorrect code";
+        throw createError("Incorrect Code", 400);
       }
 
       const user = await this.db.UserModel.findOne({ _id: input.id });
@@ -166,7 +166,7 @@ export default class UserService extends IService {
       const isPasswordValid = await user.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(user);
         const userAuth: IUserAuth = {
@@ -192,7 +192,7 @@ export default class UserService extends IService {
       const isPasswordValid = await admin.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(admin);
         const userAuth: IUserAuth = {
@@ -220,7 +220,7 @@ export default class UserService extends IService {
       const isPasswordValid = await sudoAdmin.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(sudoAdmin);
         const userAuth: IUserAuth = {

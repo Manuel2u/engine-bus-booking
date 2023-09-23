@@ -41,7 +41,6 @@ export const verifyAccessToken = async (
         }
         const { user } = decoded;
         req.user = user;
-        console.log(req.user);
       }
     );
 

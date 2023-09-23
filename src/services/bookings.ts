@@ -19,17 +19,4 @@ export class BookingService extends IService {
       throw e;
     }
   }
-
-  async bookATrip(input: IBookATrip) {
-    try {
-      const updatedUser = await this.db?.UserModel.findOneAndUpdate(
-        { _id: input.userid },
-        { $push: { Bookings: input.bookingid } },
-        { new: true }
-      );
-      return updatedUser;
-    } catch (e) {
-      throw e;
-    }
-  }
 }

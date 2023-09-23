@@ -21,15 +21,9 @@ export const CREATE_ONE = async (
       colour,
       numberOfSeats,
       status,
-      roadWorthy,
+      roadWorthyFileUrl,
+      insuranceFileUrl,
     }: IcreateBusRequestBody = req.body;
-
-    const insuranceFile = Array.isArray(req.files)
-      ? req.files[0]
-      : req.files?.["insurance"][0];
-    const roadWorthyFile = Array.isArray(req.files)
-      ? req.files[1]
-      : req.files?.["roadWorthy"][0];
 
     if (
       !vehicleNumber ||
@@ -38,37 +32,14 @@ export const CREATE_ONE = async (
       !yearOfMake ||
       !colour ||
       !status ||
-      !insuranceFile ||
-      !roadWorthyFile
+      !insuranceFileUrl ||
+      !roadWorthyFileUrl
     ) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
-    }
-
-    if (
-      insuranceFile.mimetype &&
-      roadWorthyFile.mimetype != "application/pdf"
-    ) {
-      return res.status(400).json({ message: "File type not accepted" });
-    }
-
-    const insuranceUrl = await req.context.services?.firebaseStorage.uploadFile(
-      {
-        file: insuranceFile.buffer,
-        fileName: insuranceFile.originalname,
-        folderName: "insurance",
-        mimeType: insuranceFile.mimetype,
-      }
-    );
-
-    const roadWorthyUrl =
-      await req.context.services?.firebaseStorage.uploadFile({
-        file: roadWorthyFile.buffer,
-        fileName: roadWorthyFile.originalname,
-        folderName: "roadWorthy",
-        mimeType: roadWorthyFile.mimetype,
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
       });
+    }
 
     const _bus = await req.context.services?.bus.createOne({
       vehicleNumber,
@@ -78,12 +49,12 @@ export const CREATE_ONE = async (
       colour,
       numberOfSeats,
       status,
-      insurance: insuranceUrl!,
-      roadWorthy: roadWorthyUrl!,
+      insurance: insuranceFileUrl,
+      roadWorthy: roadWorthyFileUrl,
       busCompany: req.user.busCompany,
     });
 
-    return res.status(200).json(_bus);
+    return res.status(200).json({ status: "success", data: { _bus } });
   } catch (e) {
     next(e);
   }
@@ -100,7 +71,7 @@ export const GET_ALL = async (
 
     const response = await req.context.services?.bus.getAll({ limit, skip });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
@@ -122,7 +93,7 @@ export const GET_ONE = async (
       filter: id,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }

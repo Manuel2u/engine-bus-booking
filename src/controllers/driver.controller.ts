@@ -22,14 +22,9 @@ export const CREATE_ONE = async (
       digitalAddress,
       licenseClass,
       status,
+      license,
+      profilePicture,
     }: IcreateDriverRequestBody = req.body;
-
-    const licenseFile = Array.isArray(req.files)
-      ? req.files[0]
-      : req.files?.["license"][0];
-    const profilePicFile = Array.isArray(req.files)
-      ? req.files[1]
-      : req.files?.["profilePic"][0];
 
     if (
       !fullName ||
@@ -39,45 +34,18 @@ export const CREATE_ONE = async (
       !digitalAddress ||
       !licenseClass ||
       !status ||
-      !licenseFile ||
-      !profilePicFile
+      !license ||
+      !profilePicture
     ) {
       return res
         .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+        .json({
+          status: "failed",
+          message: "Make sure all input fileds are correct",
+        });
     }
 
     // NB : we might add a bUs field to the driver
-
-    if (licenseFile.mimetype != "application/pdf") {
-      console.log(licenseFile.mimetype);
-
-      return res.status(400).json({ message: "File type not accepted" });
-    }
-
-    if (
-      profilePicFile.mimetype !== "image/jpeg" &&
-      profilePicFile.mimetype !== "image/jpg" &&
-      profilePicFile.mimetype !== "image/png"
-    ) {
-      console.log(profilePicFile.mimetype);
-
-      return res.status(400).json({ message: "File type not accepted" });
-    }
-
-    const licenseUrl = await req.context.services?.firebaseStorage.uploadFile({
-      file: licenseFile.buffer,
-      fileName: licenseFile.originalname,
-      folderName: "licenses",
-      mimeType: licenseFile.mimetype,
-    });
-
-    const pictureUrl = await req.context.services?.firebaseStorage.uploadFile({
-      file: profilePicFile.buffer,
-      fileName: profilePicFile.originalname,
-      folderName: "profile_pictures",
-      mimeType: profilePicFile.mimetype,
-    });
 
     const _bus = await req.context.services?.driver.createOne({
       fullName,
@@ -86,14 +54,14 @@ export const CREATE_ONE = async (
       email,
       licenseClass,
       mobileNumber,
-      license: licenseUrl!,
+      license,
       postalAddress,
-      profilePicture: pictureUrl!,
+      profilePicture,
       status,
       busCompany: req.user.busCompany,
     });
 
-    return res.status(200).json(_bus);
+    return res.status(200).json({ status: "success", data: _bus });
   } catch (e) {
     next(e);
   }
@@ -110,7 +78,7 @@ export const GET_ALL = async (
 
     const response = await req.context.services?.driver.getAll({ limit, skip });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
@@ -132,7 +100,7 @@ export const GET_ONE = async (
       filter: id,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
@@ -147,16 +115,17 @@ export const RETIRE_ONE = async (
     const { driverID } = req.body;
 
     if (!driverID) {
-      return res
-        .status(400)
-        .json({ message: "make sure all fields are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "make sure all fields are correct",
+      });
     }
 
     const response = await req.context.services?.driver.retireOne({
       _id: driverID,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
