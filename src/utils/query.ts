@@ -4,6 +4,7 @@ import {
   GenerateQueryOutputProps,
   OperationInputProps,
   OperationOutputProps,
+  SearchOperatorOption,
   ValueTypes,
 } from "./query.types";
 
@@ -36,12 +37,11 @@ function buildOperation(operation: OperationInputProps): OperationOutputProps {
         result[operatorKey] = { $nin: value as ValueTypes[keyof ValueTypes][] };
       } else if (key === "contains" || key === "notContains") {
         if (typeof value === "string") {
-          result[operatorKey] = `.*${value}.*`;
+          result[operatorKey] = { $regex: `.*${value}.*` };
         }
       } else if (key === "regex") {
         if (typeof value === "string") {
-          result[operatorKey] = value;
-          result["$options"] = "i"; // Add the case-insensitive option
+          result[operatorKey] = { $regex: value, $options: "i" }; // Add the case-insensitive option
         }
       } else {
         result[operatorKey] = value;
@@ -79,22 +79,56 @@ export function __generateQuery(
   modelName: string,
   queryProps: GenerateQueryInputProps
 ): GenerateQueryOutputProps {
-  const filter: Record<
-    string,
-    OperationOutputProps | { $or: OperationOutputProps[] }
-  > = {};
+  const filter: GenerateQueryOutputProps["filter"] = {};
+  const sort: GenerateQueryOutputProps["sort"] = {};
+  const populate: GenerateQueryOutputProps["populate"] = [];
+  let skip = 0;
+  let limit = 0;
+
+  // Build the filter part
   for (const field in queryProps.filter) {
-    filter[field] = buildOperation(queryProps.filter[field]);
+    const value = queryProps.filter[field];
+    if (!filter.$and) {
+      filter.$and = [];
+    }
+    filter.$and.push({ [field]: buildOperation(value) });
   }
 
-  const sort: { [key: string]: SortOrder | { $meta: any } } =
-    queryProps.sort || {};
-  const skip: number = queryProps.pagination?.skip || 0;
-  const limit: number = queryProps.pagination?.limit || 0;
-  const populate: PopulateOptions[] =
-    queryProps.populate?.map((field) =>
-      buildPopulationOptions(field, skip, limit)
-    ) || [];
+  // Build the search part
+  if (queryProps.search) {
+    const searchFilters = queryProps.search.fields.map((field) => {
+      return {
+        [field]: {
+          $regex: queryProps.search.query,
+          $options: queryProps.search.options.join(""), // Combine options if there are multiple
+        },
+      };
+    });
+    if (!filter.$and) {
+      filter.$and = [];
+    }
+    filter.$and.push({
+      $or: searchFilters,
+    });
+  }
+
+  // Example sort building
+  for (const key in queryProps.sort) {
+    sort[key] = queryProps.sort[key];
+  }
+
+  // Example populate building
+  if (queryProps.populate) {
+    populate.push(
+      ...queryProps.populate.map((field) =>
+        buildPopulationOptions(field, skip, limit)
+      )
+    );
+  }
+
+  // Example skip and limit assignment
+  skip = queryProps.pagination?.skip || 0;
+  limit = queryProps.pagination?.limit || 0;
 
   return {
     filter,
@@ -105,10 +139,7 @@ export function __generateQuery(
   };
 }
 
-// // ...
-
-// // ...
-
+// // Example usage:
 // const queryProps = {
 //   filter: {
 //     email: { eq: "emmanueldodoo94@gmail.com" },
@@ -116,6 +147,11 @@ export function __generateQuery(
 //   pagination: { skip: 0, limit: 10 },
 //   populate: ["Tickets", "Bookings.Trip", "Bookings.Bus"],
 //   sort: { email: "asc" as const },
+//   search: {
+//     query: "emma",
+//     fields: ["fullName", "programme", "email"],
+//     options: [SearchOperatorOption.CaseInsensitive],
+//   },
 // };
 
 // const generatedQuery = __generateQuery("User", queryProps);

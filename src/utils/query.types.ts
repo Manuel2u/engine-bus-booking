@@ -35,18 +35,22 @@ export interface GenerateQueryInputProps {
   search?: {
     query: string;
     fields: string[];
-    options: string[];
+    options: SearchOperatorOption[]; // Updated to use SearchOperatorOption enum
   };
   extraFilter?: Record<string, OperationInputProps>;
 }
 
 export interface GenerateQueryOutputProps {
-  filter: Record<
-    string,
-    OperationOutputProps | { $or: OperationOutputProps[] }
-  >;
+  filter?: {
+    $and?: Array<{ $or?: Array<{ [key: string]: OperationOutputProps }> }>; // filter
+  };
   sort: { [key: string]: SortOrder | { $meta: any } };
   populate: PopulateOptions[] | PopulateOptions;
   skip: number;
   limit: number;
+}
+
+export enum SearchOperatorOption {
+  CaseInsensitive = "i",
+  MultiLine = "m",
 }

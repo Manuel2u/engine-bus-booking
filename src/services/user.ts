@@ -183,7 +183,16 @@ export default class UserService extends IService {
 
   async signInAdmin(input: ISigninInput): Promise<IUserAuth | string> {
     try {
-      const admin = await this.db.AdminModel.findOne({ email: input.email });
+      const admin = await this.db.AdminModel.findOne(
+        { email: input.email },
+        {
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          phone: 0,
+          fullName: 0,
+        }
+      );
 
       if (!admin) {
         throw createError("User not found", 404);

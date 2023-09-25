@@ -92,3 +92,18 @@ export const REJECT_BUS_COMPANY = async (
     throw e;
   }
 };
+
+export const GET_DASHBOARD_STAT = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const stat = await req.context.services.busCompany.getDashBoardStats({
+      id: req.user._id,
+    });
+    return res.status(200).json({ status: "success", data: stat });
+  } catch (e) {
+    next(e);
+  }
+};
