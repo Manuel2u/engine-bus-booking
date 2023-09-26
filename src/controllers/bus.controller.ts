@@ -20,7 +20,6 @@ export const CREATE_ONE = async (
       yearOfMake,
       colour,
       numberOfSeats,
-      status,
       roadWorthyFileUrl,
       insuranceFileUrl,
     }: IcreateBusRequestBody = req.body;
@@ -31,7 +30,6 @@ export const CREATE_ONE = async (
       !numberOfSeats ||
       !yearOfMake ||
       !colour ||
-      !status ||
       !insuranceFileUrl ||
       !roadWorthyFileUrl
     ) {
@@ -48,7 +46,7 @@ export const CREATE_ONE = async (
       yearOfMake,
       colour,
       numberOfSeats,
-      status,
+      status: "ACTIVE",
       insurance: insuranceFileUrl,
       roadWorthy: roadWorthyFileUrl,
       busCompany: req.user.busCompany,
