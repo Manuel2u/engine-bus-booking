@@ -14,24 +14,14 @@ import {
 import multer from "multer";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
-router.post(
-  "/create-one",
-  upload.fields([
-    { name: "insurance", maxCount: 1 },
-    { name: "roadWorthy", maxCount: 1 },
-  ]),
-  verifyAccessToken,
-  isAdminOrSuperAdmin,
-  CREATE_ONE
-);
+router.post("/bus", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
 
-router.get("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
+router.get("/bus", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-router.get("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
+router.get("/buses", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.patch("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
+router.patch("/bus", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
 router.post(
   "/decomission-one",

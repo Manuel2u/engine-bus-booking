@@ -1,3 +1,4 @@
+import { skip } from "node:test";
 import { IAppContext, IService } from "../types/app";
 import {
   IAddBusInput,
@@ -20,12 +21,22 @@ export class BusService extends IService {
       const _bus = await this.db.BusModel.findOne({
         vehicleNumber: input.vehicleNumber,
       });
+
       if (_bus) {
         throw createError("Bus already exists", 400);
       }
+
       const bus = new this.db.BusModel({ ...input });
 
+      // Save the bus
       await bus.save();
+
+      await this.db.BusCompanyModel.findByIdAndUpdate(
+        input.busCompany,
+        { $push: { Buses: bus._id } },
+        { new: true }
+      );
+
       return bus;
     } catch (e) {
       throw e;
@@ -34,22 +45,41 @@ export class BusService extends IService {
 
   async getAll(input: IQueryBus) {
     try {
+      const filter = {
+        busCompany: { eq: input.busCompany },
+      };
+
       const generatedQuery = __generateQuery("Bus", {
-        populate: [],
-        pagination: { skip: input.skip * input.limit, limit: input.limit },
+        filter: filter,
+        search: {
+          query: input.query,
+          fields: input.fields,
+          options: input.options,
+        },
+        sort: { createdAt: "desc" },
+        populate: input.populate,
+        pagination: { skip: input.skip, limit: input.limit },
       });
 
-      const bus = this.db.BusModel.find()
+      const bus = await this.db.BusModel.find(generatedQuery.filter)
         .sort(generatedQuery.sort)
         .skip(generatedQuery.skip)
         .limit(generatedQuery.limit)
-        .populate(generatedQuery.populate);
+        .populate(generatedQuery.populate)
+        .exec();
+
+      const busCount = await this.db.BusModel.countDocuments(
+        generatedQuery.filter
+      );
 
       if (!bus) {
-        throw createError("No Bus Found", 404);
+        throw createError("No Buses Found", 404);
       }
 
-      return bus;
+      return {
+        bus,
+        busCount,
+      };
     } catch (e) {
       throw e;
     }
