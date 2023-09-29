@@ -42,6 +42,10 @@ const BusSchema = new Schema<IBusSchema>(
       required: true,
       ref: "Admin",
     },
+    updatedBy: {
+      type: SchemaTypes.ObjectId,
+      ref: "Admin",
+    },
     busCompany: {
       type: SchemaTypes.ObjectId,
       required: true,
