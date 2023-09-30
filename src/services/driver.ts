@@ -25,6 +25,12 @@ export class DriverService extends IService {
 
       await driver.save();
 
+      await this.db.BusCompanyModel.findByIdAndUpdate(
+        input.busCompany,
+        { $push: { Drivers: driver._id } },
+        { new: true }
+      );
+
       return driver;
     } catch (e) {
       throw e;
@@ -60,22 +66,40 @@ export class DriverService extends IService {
 
   async getAll(input: IQueryDriver) {
     try {
+      const filter = {
+        busCompany: { eq: input.busCompany },
+      };
+
       const generatedQuery = __generateQuery("Driver", {
-        populate: [],
-        pagination: { skip: input.skip * input.limit, limit: input.limit },
+        filter: filter,
+        search: {
+          query: input.query,
+          fields: input.fields,
+          options: input.options,
+        },
+        sort: { createdAt: "desc" },
+        populate: input.populate,
+        pagination: { skip: input.skip, limit: input.limit },
       });
 
-      const driver = this.db.DriverModel.find()
+      const drivers = await this.db.DriverModel.find(generatedQuery.filter)
         .sort(generatedQuery.sort)
         .skip(generatedQuery.skip)
         .limit(generatedQuery.limit)
-        .populate(generatedQuery.populate);
+        .populate(generatedQuery.populate)
+        .exec();
 
-      if (!driver) {
-        throw createError("No Driver Found", 404);
+      const driversCount = await this.db.DriverModel.countDocuments(
+        generatedQuery.filter
+      );
+      if (!drivers) {
+        throw createError("No Drivers Found", 404);
       }
 
-      return driver;
+      return {
+        drivers,
+        driversCount,
+      };
     } catch (e) {
       throw e;
     }

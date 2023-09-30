@@ -32,17 +32,13 @@ export const CREATE_ONE = async (
       !mobileNumber ||
       !postalAddress ||
       !digitalAddress ||
-      !licenseClass ||
-      !status ||
       !license ||
       !profilePicture
     ) {
-      return res
-        .status(400)
-        .json({
-          status: "failed",
-          message: "Make sure all input fileds are correct",
-        });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     // NB : we might add a bUs field to the driver
@@ -52,12 +48,12 @@ export const CREATE_ONE = async (
       createdBy: req.user._id,
       digitalAddress,
       email,
-      licenseClass,
+      licenseClass: "Class A",
       mobileNumber,
       license,
       postalAddress,
       profilePicture,
-      status,
+      status: "ACTIVE",
       busCompany: req.user.busCompany,
     });
 
@@ -76,7 +72,33 @@ export const GET_ALL = async (
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
 
-    const response = await req.context.services?.driver.getAll({ limit, skip });
+    let populate: string[] = req.query.populate
+      ? (req.query.populate as string).split(",").map((item) => item.trim())
+      : [];
+
+    const query: string = req.query.query ? (req.query.query as string) : "";
+
+    let fields: string[] = req.query.fields
+      ? (req.query.fields as string).split(",").map((field) => field.trim())
+      : [];
+
+    let options: any[] = req.query.options
+      ? Array.isArray(req.query.options)
+        ? req.query.options
+        : ([req.query.options] as any[])
+      : [];
+
+    console.log(populate);
+
+    const response = await req.context.services?.driver.getAll({
+      limit,
+      skip,
+      query,
+      fields,
+      options,
+      populate,
+      busCompany: req.user.busCompany,
+    });
 
     return res.status(200).json({ status: "success", data: response });
   } catch (e) {
@@ -98,6 +120,7 @@ export const GET_ONE = async (
       limit,
       skip,
       filter: id,
+      busCompany: req.user.busCompany,
     });
 
     return res.status(200).json({ status: "success", data: response });

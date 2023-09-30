@@ -28,6 +28,10 @@ export interface IQueryDriver {
   populate?: any;
   sort?: any;
   filter?: any;
+  query?: string;
+  fields?: string[];
+  options?: any[];
+  busCompany: Types.ObjectId;
 }
 export interface IDriverSchema extends IDriver, Document {
   _id: Types.ObjectId;

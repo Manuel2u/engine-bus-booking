@@ -61,7 +61,7 @@ export class BusService extends IService {
         pagination: { skip: input.skip, limit: input.limit },
       });
 
-      const bus = await this.db.BusModel.find(generatedQuery.filter)
+      const buses = await this.db.BusModel.find(generatedQuery.filter)
         .sort(generatedQuery.sort)
         .skip(generatedQuery.skip)
         .limit(generatedQuery.limit)
@@ -72,12 +72,12 @@ export class BusService extends IService {
         generatedQuery.filter
       );
 
-      if (!bus) {
+      if (!buses) {
         throw createError("No Buses Found", 404);
       }
 
       return {
-        bus,
+        buses,
         busCount,
       };
     } catch (e) {

@@ -15,12 +15,17 @@ const router = Router();
 
 router.post("/driver", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
 
-router.post("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
+router.get("/driver", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-router.post("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
+router.get("/drivers", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.patch("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
+router.patch("/driver", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-router.post("/retire-one", verifyAccessToken, isAdminOrSuperAdmin, RETIRE_ONE);
+router.post(
+  "/driver/retire",
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  RETIRE_ONE
+);
 
 export default router;
