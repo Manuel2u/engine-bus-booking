@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { IAppContext } from "../types/app";
-import { IcreateDriverRequestBody } from "../types/driver";
+import {
+  IUpdateDriverRequestBody,
+  IcreateDriverRequestBody,
+} from "../types/driver";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -43,7 +46,7 @@ export const CREATE_ONE = async (
 
     // NB : we might add a bUs field to the driver
 
-    const _bus = await req.context.services?.driver.createOne({
+    const _driver = await req.context.services?.driver.createOne({
       fullName,
       createdBy: req.user._id,
       digitalAddress,
@@ -57,7 +60,7 @@ export const CREATE_ONE = async (
       busCompany: req.user.busCompany,
     });
 
-    return res.status(200).json({ status: "success", data: _bus });
+    return res.status(200).json({ status: "success", data: _driver });
   } catch (e) {
     next(e);
   }
@@ -160,6 +163,52 @@ export const UPDATE_ONE = async (
   next: NextFunction
 ) => {
   try {
+    const {
+      fullName,
+      email,
+      mobileNumber,
+      postalAddress,
+      digitalAddress,
+      licenseClass,
+      status,
+      license,
+      profilePicture,
+      driverID,
+    }: IUpdateDriverRequestBody = req.body;
+
+    if (
+      !fullName ||
+      !email ||
+      !mobileNumber ||
+      !postalAddress ||
+      !digitalAddress ||
+      !license ||
+      !profilePicture ||
+      !driverID
+    ) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
+    }
+
+    // NB : we might add a bUs field to the driver
+
+    const _driver = await req.context.services?.driver.updateOne({
+      fullName,
+      updatedBy: req.user._id,
+      digitalAddress,
+      email,
+      licenseClass: "Class A",
+      mobileNumber,
+      license,
+      postalAddress,
+      profilePicture,
+      status: "ACTIVE",
+      _id: driverID,
+    });
+
+    return res.status(200).json({ status: "success", data: _driver });
   } catch (e) {
     next(e);
   }

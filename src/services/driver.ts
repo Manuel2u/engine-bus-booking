@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IAppContext, IService } from "../types/app";
 import {
   ICreateDriverInput,
@@ -104,7 +105,7 @@ export class DriverService extends IService {
       throw e;
     }
   }
-  async retireOne(input: IUpdateDriverInput): Promise<IDriverSchema> {
+  async retireOne(input: { _id: Types.ObjectId }): Promise<IDriverSchema> {
     try {
       const _driver = await this.db.DriverModel.findOne({ _id: input._id });
 

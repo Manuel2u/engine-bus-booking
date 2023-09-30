@@ -16,12 +16,19 @@ export interface IDriver {
 
 export interface ICreateDriverInput extends IDriver {}
 
-export interface IUpdateDriverInput {
+export interface IUpdateDriverInput
+  extends Omit<IDriver, "busCompany" | "createdBy"> {
   _id: Types.ObjectId;
+  updatedBy: Types.ObjectId;
 }
 
 export interface IcreateDriverRequestBody
   extends Omit<IDriver, "busCompany" | "createdBy"> {}
+
+export interface IUpdateDriverRequestBody
+  extends Omit<IDriver, "busCompany" | "createdBy"> {
+  driverID: Types.ObjectId;
+}
 export interface IQueryDriver {
   skip: number;
   limit: number;
