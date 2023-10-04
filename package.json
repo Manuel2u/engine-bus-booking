@@ -1,5 +1,5 @@
 {
-  "name": "banking_services_server",
+  "name": "bus_booking_server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -26,6 +26,7 @@
     "mongoose": "^7.2.0",
     "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "typescript": "^5.0.4",
     "xhr2": "^0.2.1",
     "yarn": "^1.22.19"
@@ -48,4 +49,3 @@
     "firebase-functions-test": "^3.1.0"
   }
 }
-

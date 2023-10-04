@@ -19,11 +19,11 @@ const router = Router();
 
 router.post("/signup", SIGNUP);
 
-router.post("/createadmin", verifyAccessToken, isSuperAdmin, CREATEADMIN);
+router.post("/admin", verifyAccessToken, isSuperAdmin, CREATEADMIN);
 
-router.post("/createsudoadmin", CREATESUDOADMIN);
+router.post("/sudoadmin", CREATESUDOADMIN);
 
-router.post("/signinuser", SIGNIN_USER);
+router.post("/signin-user", SIGNIN_USER);
 
 router.post("/signin-admin", SIGNIN_ADMIN);
 
@@ -33,17 +33,22 @@ router.post("/verifyphone", verifyAccessToken, VERIFYPHONE);
 
 router.get("/resendsms", verifyAccessToken, RESEND);
 
+router.post("/google", GOOGLE);
+
 router.get(
   "/google/redirect",
   initializeGoogleStrategy,
-  passport.authenticate("google"),
+  passport.authenticate("google", { session: false }),
   GOOGLE
 );
 
 router.get(
   "/google",
   initializeGoogleStrategy,
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", {
+    session: false,
+    scope: ["profile", "email"],
+  })
 );
 
 export default router;

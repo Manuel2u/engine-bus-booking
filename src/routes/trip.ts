@@ -16,15 +16,15 @@ import {
 
 const router = Router();
 
-router.post("/create-one", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
+router.post("/trip", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
 
-router.post("/get-one", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
+router.get("/trip", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
 
-router.post("/get-all", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
+router.get("/trips", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.post("/update-one", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
+router.patch("/trip", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-router.post("/cancel-one", verifyAccessToken, isAdminOrSuperAdmin, CANCEL_ONE);
+router.post("/trip/cancel", verifyAccessToken, isAdminOrSuperAdmin, CANCEL_ONE);
 
 router.post(
   "/restore-one",

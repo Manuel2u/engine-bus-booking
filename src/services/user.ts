@@ -27,7 +27,7 @@ export default class UserService extends IService {
       if (_user) {
         throw createError("User already exits", 400);
       }
-      const usersNameFirstLetter = input.fullName.split(" ")[0];
+      const usersNameFirstLetter = input.fullName.split(" ")[0].split("")[0];
 
       const user = new this.db.UserModel({
         ...input,
@@ -136,7 +136,7 @@ export default class UserService extends IService {
       }
 
       if (code.code.toString() !== input.code.toString()) {
-        return "Incorrect code";
+        throw createError("Incorrect Code", 400);
       }
 
       const user = await this.db.UserModel.findOne({ _id: input.id });
@@ -166,7 +166,7 @@ export default class UserService extends IService {
       const isPasswordValid = await user.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(user);
         const userAuth: IUserAuth = {
@@ -183,7 +183,16 @@ export default class UserService extends IService {
 
   async signInAdmin(input: ISigninInput): Promise<IUserAuth | string> {
     try {
-      const admin = await this.db.AdminModel.findOne({ email: input.email });
+      const admin = await this.db.AdminModel.findOne(
+        { email: input.email },
+        {
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          phone: 0,
+          fullName: 0,
+        }
+      );
 
       if (!admin) {
         throw createError("User not found", 404);
@@ -192,7 +201,7 @@ export default class UserService extends IService {
       const isPasswordValid = await admin.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(admin);
         const userAuth: IUserAuth = {
@@ -220,7 +229,7 @@ export default class UserService extends IService {
       const isPasswordValid = await sudoAdmin.comparePasswords(input.password);
 
       if (!isPasswordValid) {
-        return "Invalid password";
+        throw createError("Wrong Password", 400);
       } else {
         const token = _generateToken(sudoAdmin);
         const userAuth: IUserAuth = {

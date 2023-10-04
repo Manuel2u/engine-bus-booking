@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import { config } from "../config";
 import sendSMS from "../utils/sms";
 import { user } from "firebase-functions/v1/auth";
-import { ICreateAdminInput, ICreateSudoAdminInput } from "../types/user";
+import {
+  ICreateAdminInput,
+  ICreateSudoAdminInput,
+  IUserAuth,
+} from "../types/user";
+import { _generateToken } from "../utils/token";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -65,9 +70,10 @@ export const CREATEADMIN = async (
     const { email, fullName, password, phone }: ICreateAdminInput = req.body;
 
     if (!email || !fullName || !password || !phone) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     const _user = await req.context.services?.user.CreateAdmin({
@@ -83,7 +89,7 @@ export const CREATEADMIN = async (
 
     // sendSMS(phone, message);
 
-    return res.status(200).json(_user);
+    return res.status(200).json({ status: "success", data: _user });
   } catch (e) {
     next(e);
   }
@@ -111,7 +117,7 @@ export const CREATESUDOADMIN = async (
       phone,
     });
 
-    return res.status(200).json(_user);
+    return res.status(200).json({ status: "success", data: _user });
   } catch (e) {
     next(e);
   }
@@ -130,7 +136,9 @@ export const RESEND = async (
 
     sendSMS(req.user.phone, message);
 
-    return res.status(200).json("code resent succesfully");
+    return res
+      .status(200)
+      .json({ status: "success", message: "code resent succesfully" });
   } catch (e) {
     next(e);
   }
@@ -146,18 +154,20 @@ export const VERIFYPHONE = async (
   try {
     const { code }: { code: number } = req.body;
 
+    const { user } = req;
+
     if (!code) {
       return res
         .status(400)
-        .json({ message: "Please input verification code" });
+        .json({ status: "failed", message: "Please input verification code" });
     }
 
     const response = await req.context.services?.user.verifyCode({
       code: code,
-      id: req.user.id,
+      id: user._id,
     });
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json({ status: "success", message: response });
   } catch (e) {
     next(e);
   }
@@ -176,9 +186,10 @@ export const SIGNIN_USER = async (
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     const user = await req.context.services?.user.signInUser({
@@ -186,7 +197,7 @@ export const SIGNIN_USER = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }
@@ -211,7 +222,7 @@ export const SIGNIN_ADMIN = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }
@@ -236,7 +247,7 @@ export const SIGNIN_SUDOADMIN = async (
       password,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ status: "success", data: user });
   } catch (e) {
     next(e);
   }
@@ -250,18 +261,15 @@ export const GOOGLE = async (
   next: NextFunction
 ) => {
   try {
-    // const { email, fullName, phone } = req.body;
-    // if (!email || !fullName || !phone) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Make sure all input fileds are correct" });
-    // }
-    // const user = await req.context.services?.user.google({
-    //   email,
-    //   fullName,
-    //   phone,
-    // });
-    // return res.status(200).json(user);
+    const user = req.user;
+    const token = _generateToken(user);
+
+    const response: IUserAuth = {
+      user,
+      token,
+    };
+
+    return res.status(200).json(response);
   } catch (e) {
     next(e);
   }

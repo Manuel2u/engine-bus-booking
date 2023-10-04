@@ -15,8 +15,6 @@ export interface IUser {
   googleID?: string;
   appleID?: string;
   faceBookID?: string;
-  Bookings: PopulatedDoc<IBookings>;
-  Tickets: PopulatedDoc<ITicket>;
   comparePasswords(password: string): Promise<boolean>;
 }
 

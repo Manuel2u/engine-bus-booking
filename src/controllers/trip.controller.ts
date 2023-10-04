@@ -23,6 +23,8 @@ export const CREATE_ONE = async (
       origin,
       tripStatus,
       tripType,
+      bus,
+      price,
     }: IcreateTripRequestBody = req.body;
 
     if (
@@ -33,11 +35,14 @@ export const CREATE_ONE = async (
       !numberOfBusAssigned ||
       !origin ||
       !tripStatus ||
-      !tripType
+      !tripType ||
+      !price ||
+      !bus
     ) {
-      return res
-        .status(400)
-        .json({ message: "Make sure all input fileds are correct" });
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
     }
 
     const _trip = await req.context.services?.trip.createOne({
@@ -49,11 +54,13 @@ export const CREATE_ONE = async (
       destination,
       tripStatus,
       tripType,
+      price,
+      bus,
       createdBy: req.user._id,
       busCompany: req.user.busCompany,
     });
 
-    return res.status(200).json(_trip);
+    return res.status(200).json({ status: "success", data: _trip });
   } catch (e) {
     next(e);
   }
@@ -70,7 +77,7 @@ export const GET_ALL = async (
 
     const response = await req.context.services?.trip.getAll({ limit, skip });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
@@ -92,7 +99,7 @@ export const GET_ONE = async (
       filter: id,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", data: response });
   } catch (e) {
     next(e);
   }
@@ -116,7 +123,7 @@ export const CANCEL_ONE = async (
       _id: tripID,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", message: response });
   } catch (e) {
     next(e);
   }
@@ -140,7 +147,7 @@ export const RESTORE_ONE = async (
       _id: tripID,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json({ status: "success", message: response });
   } catch (e) {
     next(e);
   }

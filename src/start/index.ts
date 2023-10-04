@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import customError from "../middlewares/customError";
+import passport from "passport";
 const app = express();
 
 /************ Import Routes *************/
@@ -11,7 +12,8 @@ import driverRouter from "../routes/driver";
 import locationRouter from "../routes/location";
 import ticketRouter from "../routes/ticket";
 import tripRouter from "../routes/trip";
-
+import assetRouter from "../routes/file";
+import cors from "cors";
 /*************************************/
 
 import { Config } from "../config";
@@ -23,7 +25,9 @@ import cookieParser from "cookie-parser";
 export const start = async (config: Config) => {
   try {
     app.use(express.json());
+    app.use(cors());
     app.use(express.urlencoded({ extended: true }));
+    // app.use(passport.initialize());
     app.use(cookieParser());
 
     const appContext: IAppContext = {};
@@ -40,12 +44,13 @@ export const start = async (config: Config) => {
     //use routes
     app.use("/api/v1/auth", authRouter);
     app.use("/api/v1/booking", bookingRouter);
-    app.use("/api/v1/bus", busRouter);
+    app.use("/api/v1", busRouter);
     app.use("/api/v1/busCompany", busCompanyRouter);
-    app.use("/api/v1/driver", driverRouter);
+    app.use("/api/v1", driverRouter);
     app.use("/api/v1/location", locationRouter);
     app.use("/api/v1/ticket", ticketRouter);
     app.use("/api/v1/trip", tripRouter);
+    app.use("/api/v1/assets", assetRouter);
 
     //use custom error middleware
     app.use(customError);

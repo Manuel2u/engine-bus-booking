@@ -14,9 +14,17 @@ const UserSchema = new Schema<IUserSchema>(
     },
     phone: {
       type: SchemaTypes.String,
-      required: true,
+      required: function (this: IUserSchema) {
+        return !(this.googleID || this.faceBookID || this.appleID);
+      },
     },
     password: {
+      type: SchemaTypes.String,
+      required: function (this: IUserSchema) {
+        return !(this.googleID || this.faceBookID || this.appleID);
+      },
+    },
+    profilePic: {
       type: SchemaTypes.String,
       required: true,
     },
@@ -36,14 +44,6 @@ const UserSchema = new Schema<IUserSchema>(
     },
     appleID: {
       type: SchemaTypes.String,
-    },
-    Bookings: {
-      type: [SchemaTypes.ObjectId],
-      ref: "Booking",
-    },
-    Tickets: {
-      type: [SchemaTypes.ObjectId],
-      ref: "Ticket",
     },
     role: {
       type: SchemaTypes.String,

@@ -166,4 +166,51 @@ export class BusCompanyService extends IService {
       throw e;
     }
   }
+
+  async getDashBoardStats(input) {
+    try {
+      const user = await this.db.AdminModel.findOne({ _id: input.id });
+
+      if (!user) {
+        createError("User Not found", 404);
+      }
+
+      const aggregationPipeline = [
+        {
+          $match: {
+            busCompany: user.busCompany,
+          },
+        },
+        {
+          $lookup: {
+            from: "buscompanies",
+            localField: "busCompany",
+            foreignField: "_id",
+            as: "busCompany",
+          },
+        },
+        {
+          $project: {
+            busCompany: { $arrayElemAt: ["$busCompany", 0] },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            busCount: { $size: "$busCompany.Buses" },
+            driverCount: { $size: "$busCompany.Drivers" },
+            bookingCount: { $size: "$busCompany.Bookings" },
+          },
+        },
+      ];
+
+      const dashBoardStat = await this.db.AdminModel.aggregate(
+        aggregationPipeline
+      );
+
+      return dashBoardStat;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

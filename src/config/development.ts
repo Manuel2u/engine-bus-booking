@@ -6,11 +6,11 @@ const config: Config = {
   app: {
     env: "development",
     name: "molidom",
-    port: (process.env.PORT as unknown as number) || 8080,
+    port: (process.env.PORT as unknown as number) || 5000,
   },
   auth: {
     secret: process.env.JWT_SECRET || "00606060",
-    expiresIn : "1d"
+    expiresIn: "1d",
   },
   db: {
     uri: process.env.DEV_MONGO_URI || "",
@@ -19,7 +19,6 @@ const config: Config = {
     username: process.env.MAILGUN_USERNAME || "",
     key: process.env.MAILGUN_API_KEY || "",
     domain: process.env.MAIL_DOMAIN || "",
-   
   },
 };
 

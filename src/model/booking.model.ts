@@ -2,11 +2,6 @@ import { Schema, SchemaTypes, model } from "mongoose";
 import { IBookingsModel, IBookingsSchema } from "../types/bookings";
 
 const BookingSchema = new Schema<IBookingsSchema>({
-  Bus: {
-    type: SchemaTypes.ObjectId,
-    ref: "Bus",
-    required: true,
-  },
   Trip: {
     type: SchemaTypes.ObjectId,
     ref: "Trip",

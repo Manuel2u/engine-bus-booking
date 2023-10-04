@@ -41,6 +41,15 @@ const TripSchema = new Schema<ITripSchema>(
       required: true,
       ref: "BusCompany",
     },
+    bus: {
+      type: SchemaTypes.ObjectId,
+      required: true,
+      ref: "Bus",
+    },
+    price: {
+      type: SchemaTypes.String,
+      required: true,
+    },
     createdBy: {
       type: SchemaTypes.ObjectId,
       required: true,

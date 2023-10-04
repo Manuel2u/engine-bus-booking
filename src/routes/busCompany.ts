@@ -2,23 +2,19 @@ import { Router } from "express";
 import {
   ACCEPT_BUS_COMPANY,
   CREATE_BUS_COMPANY,
+  GET_DASHBOARD_STAT,
   REJECT_BUS_COMPANY,
 } from "../controllers/busCompany.controller";
 import {
+  isAdminOrSuperAdmin,
   isSudoAdmin,
   isSuperAdmin,
   verifyAccessToken,
 } from "../middlewares/verification";
-import multer from "multer";
 
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
-router.post(
-  "/create-bus-company",
-  upload.single("companyDocs"),
-  CREATE_BUS_COMPANY
-);
+router.post("/bus-company", CREATE_BUS_COMPANY);
 
 router.post(
   "/accept-bus-company",
@@ -28,5 +24,12 @@ router.post(
 );
 
 router.post("/reject-bus-company", isSudoAdmin, REJECT_BUS_COMPANY);
+
+router.get(
+  "/dashboard",
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  GET_DASHBOARD_STAT
+);
 
 export default router;

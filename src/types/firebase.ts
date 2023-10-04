@@ -1,5 +1,5 @@
 export interface IUploadFileInput {
-  file: Buffer;
+  file: Blob | Buffer;
   folderName: string;
   fileName: string;
   mimeType: string;
