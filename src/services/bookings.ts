@@ -4,6 +4,7 @@ import {
   IBookingsSchema,
   IcreateBookingsInput,
 } from "../types/bookings";
+import { generateSignature } from "../utils/generateSignature";
 
 export class BookingService extends IService {
   constructor(context: IAppContext) {
@@ -14,6 +15,7 @@ export class BookingService extends IService {
     try {
       const booking = new this.db.BookingModel({ ...input });
       await booking.save();
+
       return booking;
     } catch (e) {
       throw e;

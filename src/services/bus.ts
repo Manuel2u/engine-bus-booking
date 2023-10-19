@@ -85,6 +85,28 @@ export class BusService extends IService {
     }
   }
 
+  async getAllBusNumbers() {
+    try {
+      const buses = await this.db.BusModel.find(
+        {},
+        { _id: 1, vehicleNumber: 1 }
+      );
+
+      if (!buses) {
+        throw createError("Buses not found", 404);
+      }
+
+      const renamedBuses = buses.map((bus) => ({
+        _id: bus._id,
+        name: bus.vehicleNumber,
+      }));
+
+      return renamedBuses;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getOne(input: IQueryBus) {
     const generatedQuery = __generateQuery("Bus", {
       filter: { _id: { eq: input.filter } },

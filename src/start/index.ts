@@ -13,9 +13,9 @@ import locationRouter from "../routes/location";
 import ticketRouter from "../routes/ticket";
 import tripRouter from "../routes/trip";
 import assetRouter from "../routes/file";
-import cors from "cors";
 /*************************************/
 
+import cors from "cors";
 import { Config } from "../config";
 import { IAppContext } from "../types/app";
 import InitDB from "../model";
@@ -49,8 +49,9 @@ export const start = async (config: Config) => {
     app.use("/api/v1", driverRouter);
     app.use("/api/v1/location", locationRouter);
     app.use("/api/v1/ticket", ticketRouter);
-    app.use("/api/v1/trip", tripRouter);
+    app.use("/api/v1", tripRouter);
     app.use("/api/v1/assets", assetRouter);
+    app.use("/api/v1/locations", locationRouter);
 
     //use custom error middleware
     app.use(customError);

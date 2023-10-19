@@ -19,11 +19,7 @@ const TripSchema = new Schema<ITripSchema>(
       type: SchemaTypes.String,
       required: true,
     },
-    departureTime: {
-      type: SchemaTypes.String,
-      required: true,
-    },
-    arrivalTime: {
+    TimeScheduled: {
       type: SchemaTypes.String,
       required: true,
     },
@@ -47,7 +43,7 @@ const TripSchema = new Schema<ITripSchema>(
       ref: "Bus",
     },
     price: {
-      type: SchemaTypes.String,
+      type: SchemaTypes.Number,
       required: true,
     },
     createdBy: {

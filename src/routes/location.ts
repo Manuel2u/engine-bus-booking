@@ -1,4 +1,5 @@
 import express from "express";
+import { ADD_LOCATION, GET_ALL } from "../controllers/location.controller";
 // import {
 //   addLocation,
 //   deleteLocation,
@@ -10,8 +11,9 @@ import express from "express";
 const router = express.Router();
 
 // Route to add a new location
-// router.post("/", addLocation);
+router.post("/", ADD_LOCATION);
 
+router.get("/", GET_ALL);
 // // Route to delete a location
 // router.delete("/:id", deleteLocation);
 

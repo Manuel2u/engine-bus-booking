@@ -6,8 +6,7 @@ export interface ITrip {
   origin: string;
   destination: string;
   numberOfBusAssigned: string;
-  departureTime: string;
-  arrivalTime: string;
+  TimeScheduled: string;
   tripStatus: "CANCELLED" | "ACTIVE";
   tripType: string;
   busCompany: Types.ObjectId;

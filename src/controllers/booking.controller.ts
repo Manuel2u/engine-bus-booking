@@ -4,6 +4,8 @@ import {
   IcreateBookingRequestBody,
   IcreateBookingsInput,
 } from "../types/bookings";
+import { generateSignature } from "../utils/generateSignature";
+import { IcreateTicketInput } from "../types/tickets";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -31,14 +33,36 @@ export const CREATE_ONE = async (
       User: req.user._id,
     });
 
-    // Update user's Bookings array with the booking's ID
-    const updatedUser = await req.context.db?.UserModel.findOneAndUpdate(
-      { _id: req.user.user._id },
-      { $push: { Bookings: _booking?._id } },
-      { new: true }
-    );
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 5);
 
-    return res.status(200).json(_booking);
+    const qrCodeData = {
+      ticketId: _booking._id, // Unique identifier for the ticket
+      expirationDate: expirationDate.toISOString(), // Expiration date
+      eventInfo: "Bus Ticket", // Event information
+      status: "VALID", // Initial status
+      signature: null,
+    };
+
+    // Sign the QR code data with a secret key (keep the key secure)
+    const secretKey = "YourSecretKey";
+    const signature = generateSignature(qrCodeData, secretKey);
+    qrCodeData.signature = signature;
+
+    // Create a new ticket associated with the booking
+    const ticketData: IcreateTicketInput = {
+      Booking: _booking._id,
+      user: req.user._id, // Use the user associated with the booking
+      QRCodeData: qrCodeData,
+      status: "VALID", // Initial status
+    };
+
+    // Create the ticket with the QR code
+    const ticket = await req.context.services.ticket.createOne({
+      ...ticketData,
+    });
+
+    return res.status(200).json({ success: true, data: ticket });
   } catch (e) {
     next(e);
   }

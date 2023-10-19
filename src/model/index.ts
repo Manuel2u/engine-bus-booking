@@ -19,6 +19,8 @@ import BookingModel from "./booking.model";
 import BusCompanyModel from "./busCompany.model";
 import AdminModel from "./admin.model";
 import SudoAdminModel from "./sudoadmin.model";
+import LocationModel from "./location.model";
+import { ILocationModel } from "../types/locations";
 
 export interface IDb {
   AdminModel: IAdminModel;
@@ -31,6 +33,7 @@ export interface IDb {
   TicketModel: ITicketModel;
   BookingModel: IBookingsModel;
   BusCompanyModel: IbusCompanyModel;
+  LocationModel: ILocationModel;
 }
 
 export default async function InitDB(config: Config["db"]): Promise<IDb> {
@@ -48,6 +51,7 @@ export default async function InitDB(config: Config["db"]): Promise<IDb> {
     await TicketModel.createCollection();
     await BookingModel.createCollection();
     await BusCompanyModel.createCollection();
+    await LocationModel.createCollection();
 
     return {
       AdminModel,
@@ -60,6 +64,7 @@ export default async function InitDB(config: Config["db"]): Promise<IDb> {
       BookingModel,
       TicketModel,
       TripModel,
+      LocationModel,
     };
   } catch (e) {
     throw e;
