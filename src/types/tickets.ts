@@ -7,7 +7,9 @@ export interface ITicket {
   status: "VALID" | "INVALID";
 }
 
-export interface IcreateTicketInput extends ITicket {}
+export interface IcreateTicketInput extends Omit<ITicket, "QRCode"> {
+  QRCodeData: Object;
+}
 
 export interface IGetTicket {
   userid: Types.ObjectId;

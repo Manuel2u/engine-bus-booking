@@ -16,12 +16,10 @@ export const CREATE_ONE = async (
   try {
     const {
       date,
-      arrivalTime,
-      departureTime,
+      TimeScheduled,
       destination,
       numberOfBusAssigned,
       origin,
-      tripStatus,
       tripType,
       bus,
       price,
@@ -29,12 +27,10 @@ export const CREATE_ONE = async (
 
     if (
       !date ||
-      !arrivalTime ||
-      !departureTime ||
+      !TimeScheduled ||
       !destination ||
       !numberOfBusAssigned ||
       !origin ||
-      !tripStatus ||
       !tripType ||
       !price ||
       !bus
@@ -47,12 +43,11 @@ export const CREATE_ONE = async (
 
     const _trip = await req.context.services?.trip.createOne({
       date,
-      arrivalTime,
-      departureTime,
+      TimeScheduled,
       numberOfBusAssigned,
       origin,
       destination,
-      tripStatus,
+      tripStatus: "ACTIVE",
       tripType,
       price,
       bus,

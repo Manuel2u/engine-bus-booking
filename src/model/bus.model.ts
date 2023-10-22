@@ -22,7 +22,11 @@ const BusSchema = new Schema<IBusSchema>(
     },
     numberOfSeats: {
       type: SchemaTypes.String,
-      required: true,
+      required: [true, "number of seats is required"],
+      validate: {
+        validator: Number.isInteger,
+        message: "Number of seats must be an integer",
+      },
     },
     status: {
       type: SchemaTypes.String,

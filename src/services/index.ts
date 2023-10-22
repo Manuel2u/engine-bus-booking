@@ -13,6 +13,7 @@ import { DriverService } from "./driver";
 import { TripService } from "./trip";
 import { BookingService } from "./bookings";
 import { TicketService } from "./ticket";
+import { LocationService } from "./location";
 
 export interface IServices {
   user: UserService;
@@ -26,6 +27,7 @@ export interface IServices {
   trip: TripService;
   booking: BookingService;
   ticket: TicketService;
+  location: LocationService;
 }
 
 export default async function initServices(context: IAppContext) {
@@ -43,6 +45,7 @@ export default async function initServices(context: IAppContext) {
       booking: new BookingService(context),
       ticket: new TicketService(context),
       firebaseStorage: new FireBaseStorage(context),
+      location: new LocationService(context),
     };
   } catch (e) {
     throw e;

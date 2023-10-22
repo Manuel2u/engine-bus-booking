@@ -5,16 +5,20 @@ const BookingSchema = new Schema<IBookingsSchema>({
   Trip: {
     type: SchemaTypes.ObjectId,
     ref: "Trip",
-    required: true,
+    required: [true, "Trip is required"],
   },
   User: {
     type: SchemaTypes.ObjectId,
     ref: "User",
-    required: true,
+    required: [true, "User Id is required"],
   },
   numOfSeats: {
     type: SchemaTypes.Number,
-    required: true,
+    required: [true, "number of seats is required"],
+    validate: {
+      validator: Number.isInteger,
+      message: "Number of seats must be an integer",
+    },
   },
 });
 
