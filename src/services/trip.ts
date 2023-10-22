@@ -7,6 +7,7 @@ import {
   IcreateTripInput,
 } from "../types/trips";
 import createError from "../utils/error";
+import { formatDate, formatPeriod } from "../utils/formatDate";
 import { __generateQuery } from "../utils/query";
 
 export class TripService extends IService {
@@ -54,21 +55,38 @@ export class TripService extends IService {
   async getAll(input: IQueryTrip) {
     try {
       const generatedQuery = __generateQuery("Trip", {
-        populate: [],
+        populate: ["origin", "destination"],
         pagination: { skip: input.skip * input.limit, limit: input.limit },
       });
 
-      const trip = this.db.TripModel.find()
+      const trips = await this.db.TripModel.find()
         .sort(generatedQuery.sort)
         .skip(generatedQuery.skip)
         .limit(generatedQuery.limit)
         .populate(generatedQuery.populate);
 
-      if (!trip) {
-        throw createError("No Trip Found", 404);
+      if (!trips) {
+        throw createError("No Trips Found", 404);
       }
+      // Transform the date field in each trip object
+      const formattedTrips = trips.map((trip) => {
+        const formattedDate = formatDate(trip.date);
+        const formattedPeriod = formatPeriod(trip.TimeScheduled);
+        return {
+          ...trip.toObject(),
+          date: formattedDate,
+          TimeScheduled: formattedPeriod,
+        };
+      });
 
-      return trip;
+      const tripsCount = await this.db.TripModel.countDocuments(
+        generatedQuery.filter
+      );
+
+      return {
+        trips: formattedTrips,
+        tripsCount: tripsCount,
+      };
     } catch (e) {
       throw e;
     }

@@ -8,11 +8,13 @@ const TripSchema = new Schema<ITripSchema>(
       required: true,
     },
     origin: {
-      type: SchemaTypes.String,
+      type: SchemaTypes.ObjectId,
+      ref: "Location",
       required: true,
     },
     destination: {
-      type: SchemaTypes.String,
+      type: SchemaTypes.ObjectId,
+      ref: "Location",
       required: true,
     },
     numberOfBusAssigned: {

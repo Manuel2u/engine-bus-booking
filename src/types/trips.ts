@@ -3,8 +3,8 @@ import { IBus } from "./bus";
 
 export interface ITrip {
   date: Date;
-  origin: string;
-  destination: string;
+  origin: Types.ObjectId;
+  destination: Types.ObjectId;
   numberOfBusAssigned: string;
   TimeScheduled: string;
   tripStatus: "CANCELLED" | "ACTIVE";
