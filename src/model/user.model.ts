@@ -10,7 +10,7 @@ const UserSchema = new Schema<IUserSchema>(
     },
     email: {
       type: SchemaTypes.String,
-      required: true,
+      required: false,
     },
     phone: {
       type: SchemaTypes.String,
