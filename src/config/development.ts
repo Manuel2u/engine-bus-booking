@@ -6,7 +6,7 @@ const config: Config = {
   app: {
     env: "development",
     name: "molidom",
-    port: (process.env.PORT as unknown as number) || 5000,
+    port: (process.env.PORT as unknown as number) || 8080,
   },
   auth: {
     secret: process.env.JWT_SECRET || "00606060",

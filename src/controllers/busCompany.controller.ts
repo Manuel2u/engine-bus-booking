@@ -21,14 +21,34 @@ export const CREATE_BUS_COMPANY = async (
       mobileNumber,
       email,
       companyDocumentsUrl,
+      contactPersonName,
+      contactPersonEmail,
+      contactPersonPhone,
+      contactPersonPosition,
+      note,
     }: {
       name: string;
       mobileNumber: string;
       email: string;
       companyDocumentsUrl: string;
+      contactPersonName: string;
+      contactPersonPhone: string;
+      contactPersonEmail: string;
+      contactPersonPosition: string;
+      note: string;
     } = req.body;
 
-    if (!name || !mobileNumber || !email || !companyDocumentsUrl) {
+    if (
+      !name ||
+      !mobileNumber ||
+      !email ||
+      !companyDocumentsUrl ||
+      !contactPersonEmail ||
+      !contactPersonName ||
+      !contactPersonPhone ||
+      !contactPersonPosition ||
+      !note
+    ) {
       return res.status(400).json({
         status: "failed",
         message: "Make sure all input fileds are correct",
@@ -39,6 +59,11 @@ export const CREATE_BUS_COMPANY = async (
       email: email,
       mobileNumber: mobileNumber,
       companyDocuments: companyDocumentsUrl,
+      contactPersonEmail,
+      contactPersonName,
+      contactPersonPhone,
+      contactPersonPosition,
+      note,
     });
 
     return res.status(200).json({ status: "success", data: { busCompany } });

@@ -5,12 +5,17 @@ export interface IbusCompany {
   mobileNumber: string;
   email: string;
   companyDocuments: string;
+  contactPersonName: string;
+  contactPersonPhone: string;
+  contactPersonEmail: string;
+  contactPersonPosition: string;
   users: Types.ObjectId[];
   Buses: Types.ObjectId[];
   Drivers: Types.ObjectId[];
   status: "ACCEPTED" | "REJECTED" | "PENDING";
   Trips: Types.ObjectId[];
   Bookings: Types.ObjectId[];
+  note: string;
 }
 
 export interface ICreateBusCompanyInput

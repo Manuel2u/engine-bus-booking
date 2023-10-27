@@ -25,6 +25,26 @@ const busCompanySchema = new Schema<IbusCompanySchema>({
     type: SchemaTypes.String,
     required: true,
   },
+  contactPersonEmail: {
+    type: SchemaTypes.String,
+    required: true,
+  },
+  contactPersonName: {
+    type: SchemaTypes.String,
+    required: true,
+  },
+  contactPersonPhone: {
+    type: SchemaTypes.String,
+    required: true,
+  },
+  contactPersonPosition: {
+    type: SchemaTypes.String,
+    required: true,
+  },
+  note: {
+    type: SchemaTypes.String,
+    required: true,
+  },
   Buses: [
     {
       type: SchemaTypes.ObjectId,
