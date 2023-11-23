@@ -28,6 +28,9 @@ export interface IQueryTrip {
   populate?: any;
   sort?: any;
   filter?: any;
+  options?: any;
+  query?: any;
+  fields?: any;
 }
 
 export interface IUpdateTripInput {

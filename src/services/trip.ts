@@ -54,8 +54,15 @@ export class TripService extends IService {
 
   async getAll(input: IQueryTrip) {
     try {
+      const filter = { tripStatus: { eq: "ACTIVE" } };
       const generatedQuery = __generateQuery("Trip", {
-        populate: ["origin", "destination"],
+        filter,
+        populate: input.populate,
+        search: {
+          query: input.query,
+          fields: input.fields,
+          options: input.options,
+        },
         pagination: { skip: input.skip * input.limit, limit: input.limit },
       });
 

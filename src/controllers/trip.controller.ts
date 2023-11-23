@@ -70,7 +70,27 @@ export const GET_ALL = async (
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
 
-    const response = await req.context.services?.trip.getAll({ limit, skip });
+    const populate = req.query.populate;
+    const query: string = req.query.query ? (req.query.query as string) : "";
+
+    let fields: string[] = req.query.fields
+      ? (req.query.fields as string).split(",").map((field) => field.trim())
+      : [];
+
+    let options: any[] = req.query.options
+      ? Array.isArray(req.query.options)
+        ? req.query.options
+        : ([req.query.options] as any[])
+      : [];
+
+    const response = await req.context.services?.trip.getAll({
+      limit,
+      skip,
+      populate,
+      query,
+      fields,
+      options,
+    });
 
     return res.status(200).json({ status: "success", data: response });
   } catch (e) {
