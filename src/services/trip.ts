@@ -57,12 +57,12 @@ export class TripService extends IService {
       const filter = { tripStatus: { eq: "ACTIVE" } };
       const generatedQuery = __generateQuery("Trip", {
         filter,
-        populate: input.populate,
         search: {
           query: input.query,
           fields: input.fields,
           options: input.options,
         },
+        populate: input.populate,
         pagination: { skip: input.skip * input.limit, limit: input.limit },
       });
 
