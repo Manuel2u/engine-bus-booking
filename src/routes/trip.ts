@@ -18,9 +18,9 @@ const router = Router();
 
 router.post("/trip", verifyAccessToken, isAdminOrSuperAdmin, CREATE_ONE);
 
-router.get("/trip", verifyAccessToken, isAdminOrSuperAdmin, GET_ONE);
+router.get("/trip", verifyAccessToken, isPhoneNumberVerified, GET_ONE);
 
-router.get("/trips", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
+router.get("/trips", verifyAccessToken, isPhoneNumberVerified, GET_ALL);
 
 router.patch("/trip", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
