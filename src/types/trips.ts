@@ -31,6 +31,16 @@ export interface IQueryTrip {
   options?: any;
   query?: any;
   fields?: any;
+  busCompany?: Types.ObjectId;
+}
+
+export interface ISearchTrips {
+  origin: any;
+  destination: any;
+  date: any;
+  populate: any;
+  skip: number;
+  limit: number;
 }
 
 export interface IUpdateTripInput {

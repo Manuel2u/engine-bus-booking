@@ -70,7 +70,10 @@ export const GET_ALL = async (
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
 
-    const populate = req.query.populate;
+    let populate: string[] = req.query.populate
+      ? (req.query.populate as string).split(",").map((item) => item.trim())
+      : [];
+
     const query: string = req.query.query ? (req.query.query as string) : "";
 
     let fields: string[] = req.query.fields
@@ -83,6 +86,8 @@ export const GET_ALL = async (
         : ([req.query.options] as any[])
       : [];
 
+    console.log(populate);
+
     const response = await req.context.services?.trip.getAll({
       limit,
       skip,
@@ -90,6 +95,7 @@ export const GET_ALL = async (
       query,
       fields,
       options,
+      busCompany: req.user.busCompany,
     });
 
     return res.status(200).json({ status: "success", data: response });
@@ -112,6 +118,38 @@ export const GET_ONE = async (
       limit,
       skip,
       filter: id,
+    });
+
+    return res.status(200).json({ status: "success", data: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const SEARCH_TRIP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const skip = parseInt(req.query.skip as string);
+    const limit = parseInt(req.query.limit as string);
+
+    let populate: string[] = req.query.populate
+      ? (req.query.populate as string).split(",").map((item) => item.trim())
+      : [];
+
+    const origin = req.query.origin;
+    const destination = req.query.destination;
+    const date = req.query.date;
+
+    const response = await req.context.services?.trip.SearchTrips({
+      origin,
+      destination,
+      date,
+      skip,
+      limit,
+      populate,
     });
 
     return res.status(200).json({ status: "success", data: response });

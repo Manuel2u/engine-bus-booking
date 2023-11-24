@@ -2,6 +2,7 @@ import { IAppContext, IService } from "../types/app";
 import {
   IDeleteTripInput,
   IQueryTrip,
+  ISearchTrips,
   ITripSchema,
   IUpdateTripInput,
   IcreateTripInput,
@@ -54,27 +55,29 @@ export class TripService extends IService {
 
   async getAll(input: IQueryTrip) {
     try {
-      const filter = { tripStatus: { eq: "ACTIVE" } };
+      const filter = { busCompany: { eq: input.busCompany } };
+
+      console.log(input.busCompany);
+
       const generatedQuery = __generateQuery("Trip", {
-        filter,
+        filter: filter,
         search: {
           query: input.query,
           fields: input.fields,
           options: input.options,
         },
         populate: input.populate,
-        pagination: { skip: input.skip * input.limit, limit: input.limit },
+        sort: { createdAt: "desc" },
+        pagination: { skip: input.skip, limit: input.limit },
       });
 
-      const trips = await this.db.TripModel.find()
+      const trips = await this.db.TripModel.find(generatedQuery.filter)
         .sort(generatedQuery.sort)
         .skip(generatedQuery.skip)
         .limit(generatedQuery.limit)
-        .populate(generatedQuery.populate);
+        .populate(generatedQuery.populate)
+        .exec();
 
-      if (!trips) {
-        throw createError("No Trips Found", 404);
-      }
       // Transform the date field in each trip object
       const formattedTrips = trips.map((trip) => {
         const formattedDate = formatDate(trip.date);
@@ -92,6 +95,33 @@ export class TripService extends IService {
 
       return {
         trips: formattedTrips,
+        tripsCount: tripsCount,
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async SearchTrips(input: ISearchTrips) {
+    try {
+      const tripsFound = await this.db.TripModel.find({
+        origin: input.origin,
+        date: input.date,
+        destination: input.destination,
+      })
+        .populate(input.populate)
+        .skip(input.skip)
+        .limit(input.limit)
+        .exec();
+
+      const tripsCount = await this.db.TripModel.countDocuments({
+        origin: input.origin,
+        date: input.date,
+        destination: input.destination,
+      });
+
+      return {
+        trips: tripsFound,
         tripsCount: tripsCount,
       };
     } catch (e) {

@@ -82,6 +82,7 @@ export class DriverService extends IService {
         populate: input.populate,
         pagination: { skip: input.skip, limit: input.limit },
       });
+      console.log(JSON.stringify(generatedQuery));
 
       const drivers = await this.db.DriverModel.find(generatedQuery.filter)
         .sort(generatedQuery.sort)

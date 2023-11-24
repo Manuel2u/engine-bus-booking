@@ -94,7 +94,9 @@ export const GET_ALL = async (
   try {
     const skip = parseInt(req.query.skip as string);
     const limit = parseInt(req.query.limit as string);
-    const populate = req.query.populate;
+    let populate: string[] = req.query.populate
+      ? (req.query.populate as string).split(",").map((item) => item.trim())
+      : [];
     const query: string = req.query.query ? (req.query.query as string) : "";
 
     let fields: string[] = req.query.fields
