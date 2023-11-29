@@ -23,12 +23,7 @@ router.get("/trip", verifyAccessToken, isPhoneNumberVerified, GET_ONE);
 
 router.get("/trips", verifyAccessToken, isAdminOrSuperAdmin, GET_ALL);
 
-router.get(
-  "/trips/search",
-  verifyAccessToken,
-  isPhoneNumberVerified,
-  SEARCH_TRIP
-);
+router.get("/trips/search", SEARCH_TRIP);
 
 router.patch("/trip", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
