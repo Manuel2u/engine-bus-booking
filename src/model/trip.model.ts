@@ -21,7 +21,7 @@ const TripSchema = new Schema<ITripSchema>(
       type: SchemaTypes.String,
       required: true,
     },
-    TimeScheduled: {
+    timeScheduled: {
       type: new Schema({
         startTime: {
           type: SchemaTypes.String,

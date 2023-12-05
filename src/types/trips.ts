@@ -6,7 +6,7 @@ export interface ITrip {
   origin: Types.ObjectId;
   destination: Types.ObjectId;
   numberOfBusAssigned: string;
-  TimeScheduled: {
+  timeScheduled: {
     startTime: string;
     endTime: string;
   };
@@ -44,6 +44,10 @@ export interface ISearchTrips {
   populate: any;
   skip: number;
   limit: number;
+}
+export interface ITripSearchResult {
+  trips: [ITripSchema];
+  tripsCount: number;
 }
 
 export interface IUpdateTripInput {

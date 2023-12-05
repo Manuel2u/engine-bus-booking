@@ -4,6 +4,7 @@ import {
   IQueryTrip,
   ISearchTrips,
   ITripSchema,
+  ITripSearchResult,
   IUpdateTripInput,
   IcreateTripInput,
 } from "../types/trips";
@@ -81,11 +82,9 @@ export class TripService extends IService {
       // Transform the date field in each trip object
       const formattedTrips = trips.map((trip) => {
         const formattedDate = formatDate(trip.date);
-        const formattedPeriod = formatPeriod(trip.TimeScheduled);
         return {
           ...trip.toObject(),
           date: formattedDate,
-          TimeScheduled: formattedPeriod,
         };
       });
 
@@ -104,7 +103,7 @@ export class TripService extends IService {
 
   async SearchTrips(input: ISearchTrips) {
     try {
-      const tripsFound = await this.db.TripModel.find({
+      const trips = await this.db.TripModel.find({
         origin: input.origin,
         date: input.date,
         destination: input.destination,
@@ -121,7 +120,7 @@ export class TripService extends IService {
       });
 
       return {
-        trips: tripsFound,
+        trips,
         tripsCount: tripsCount,
       };
     } catch (e) {
