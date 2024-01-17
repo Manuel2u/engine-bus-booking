@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import { IAppContext } from "../types/app";
-import { IcreateTripRequestBody } from "../types/trips";
+import { IUpdateTripInput, IcreateTripRequestBody } from "../types/trips";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -164,16 +164,16 @@ export const CANCEL_ONE = async (
   next: NextFunction
 ) => {
   try {
-    const { tripID } = req.body;
+    const { tripId } = req.body;
 
-    if (!tripID) {
+    if (!tripId) {
       return res
         .status(400)
         .json({ message: "make sure all fields are correct" });
     }
 
     const response = await req.context.services?.trip.cancelOne({
-      _id: tripID,
+      tripId,
     });
 
     return res.status(200).json({ status: "success", message: response });
@@ -197,7 +197,7 @@ export const RESTORE_ONE = async (
     }
 
     const response = await req.context.services?.trip.restoreOne({
-      _id: tripID,
+      tripId: tripID,
     });
 
     return res.status(200).json({ status: "success", message: response });
@@ -212,6 +212,48 @@ export const UPDATE_ONE = async (
   next: NextFunction
 ) => {
   try {
+    const {
+      date,
+      TimeScheduled,
+      destination,
+      numberOfBusAssigned,
+      origin,
+      tripType,
+      bus,
+      price,
+      tripId,
+    }: IUpdateTripInput = req.body;
+
+    if (
+      !date ||
+      !TimeScheduled ||
+      !destination ||
+      !numberOfBusAssigned ||
+      !origin ||
+      !tripType ||
+      !price ||
+      !bus ||
+      !tripId
+    ) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
+    }
+
+    const _trip = await req.context.services?.trip.updateOne({
+      date,
+      TimeScheduled,
+      numberOfBusAssigned,
+      origin,
+      destination,
+      tripType,
+      price,
+      bus,
+      tripId,
+    });
+
+    return res.status(200).json({ status: "success", data: _trip });
   } catch (e) {
     next(e);
   }
@@ -223,6 +265,21 @@ export const DELETE_ONE = async (
   next: NextFunction
 ) => {
   try {
+    const tripId = req.params.tripId as any;
+
+    console.log(tripId);
+
+    if (!tripId) {
+      return res
+        .status(400)
+        .json({ message: "make sure all fields are correct" });
+    }
+
+    const response = await req.context.services?.trip.deleteOne({
+      _id: tripId,
+    });
+
+    return res.status(200).json({ status: "success", message: response });
   } catch (e) {
     next(e);
   }

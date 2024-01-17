@@ -43,12 +43,12 @@ export const start = async (config: Config) => {
 
     //use routes
     app.use("/api/v1/auth", authRouter);
-    app.use("/api/v1/booking", bookingRouter);
+    app.use("/api/v1", bookingRouter);
     app.use("/api/v1", busRouter);
     app.use("/api/v1/busCompany", busCompanyRouter);
     app.use("/api/v1", driverRouter);
     app.use("/api/v1/location", locationRouter);
-    app.use("/api/v1/ticket", ticketRouter);
+    app.use("/api/v1", ticketRouter);
     app.use("/api/v1", tripRouter);
     app.use("/api/v1/assets", assetRouter);
     app.use("/api/v1/locations", locationRouter);

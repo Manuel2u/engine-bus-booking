@@ -8,15 +8,28 @@ export interface ITicket {
 }
 
 export interface IcreateTicketInput extends Omit<ITicket, "QRCode"> {
-  QRCodeData: Object;
+  QRCodeData: {
+    bookingId: Types.ObjectId;
+  };
 }
 
 export interface IGetTicket {
-  userid: Types.ObjectId;
-  ticketid: Types.ObjectId;
+  bookingId: Types.ObjectId;
+  skip: number;
+  limit: number;
+  populate?: any;
+  sort?: any;
+  filter?: any;
+  query?: string;
+  fields?: string[];
+  options?: any[];
 }
 
 export interface IcreateTicketRequestBody extends Omit<ITicket, "user"> {}
+
+export interface IGetTicketRequestBody {
+  bookingId: Types.ObjectId;
+}
 export interface ITicketSchema extends ITicket, Document {
   _id: Types.ObjectId;
   createdAt: Date;

@@ -36,7 +36,7 @@ const TripSchema = new Schema<ITripSchema>(
     },
     tripStatus: {
       type: SchemaTypes.String,
-      enum: ["CANCELLED", "ACTIVE"],
+      enum: ["CANCELLED", "ACTIVE", "DELETED", "IN_ACTIVE"],
       required: true,
     },
     tripType: {
@@ -56,6 +56,11 @@ const TripSchema = new Schema<ITripSchema>(
     price: {
       type: SchemaTypes.Number,
       required: true,
+    },
+    slots: {
+      type: [SchemaTypes.String],
+      required: false,
+      default: [],
     },
     createdBy: {
       type: SchemaTypes.ObjectId,

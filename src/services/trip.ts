@@ -130,7 +130,7 @@ export class TripService extends IService {
 
   async cancelOne(input: IUpdateTripInput): Promise<ITripSchema> {
     try {
-      const _trip = await this.db.TripModel.findOne({ _id: input._id });
+      const _trip = await this.db.TripModel.findOne({ _id: input.tripId });
 
       if (!_trip) {
         throw createError("Trip does not exist", 404);
@@ -145,7 +145,7 @@ export class TripService extends IService {
 
   async restoreOne(input: IUpdateTripInput): Promise<ITripSchema> {
     try {
-      const _trip = await this.db.TripModel.findOne({ _id: input._id });
+      const _trip = await this.db.TripModel.findOne({ _id: input.tripId });
 
       if (!_trip) {
         throw createError("Trip does not exist", 404);
@@ -160,7 +160,7 @@ export class TripService extends IService {
 
   async updateOne(input: IUpdateTripInput): Promise<ITripSchema> {
     try {
-      const _trip = await this.db.TripModel.findOne({ _id: input._id });
+      const _trip = await this.db.TripModel.findOne({ _id: input.tripId });
 
       if (!_trip) {
         throw createError("Trip does not exist", 404);
@@ -181,7 +181,7 @@ export class TripService extends IService {
         throw createError("Trip does not exist", 404);
       }
 
-      await _trip.deleteOne();
+      await _trip.updateOne({ $set: { tripStatus: "DELETED" } });
       return _trip;
     } catch (e) {
       throw e;

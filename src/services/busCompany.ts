@@ -5,6 +5,7 @@ import {
   IAcceptBusCompany,
   ICreateBusCompanyInput,
   IGetBusCompany,
+  IUpdateBusCompanyInput,
   IbusCompany,
   IbusCompanySchema,
 } from "../types/busCompany";
@@ -55,14 +56,14 @@ export class BusCompanyService extends IService {
         throw createError("Bus Company does not exist", 404);
       }
 
-      await _BusCompany?.updateOne({ $set: { status: "ACCEPTED" } });
+      await _BusCompany?.updateOne({ $set: { status: "APPROVED" } });
 
       const randomPassowrd = generatePassword(12);
       const usersNameFirstLetter = _BusCompany?.name.split(" ")[0].split("")[0];
 
       const user = new this.db.AdminModel({
         role: "BUS_COMPANY",
-        fullName: _BusCompany?.name,
+        fullName: "N/A",
         profilePicture: usersNameFirstLetter,
         phone: _BusCompany?.mobileNumber,
         email: _BusCompany?.email,
@@ -120,17 +121,37 @@ export class BusCompanyService extends IService {
   async getAll(input: {
     skip: number;
     limit: number;
-  }): Promise<IbusCompanySchema[]> {
+    populate?: string[];
+    query?: string;
+    fields?: string[];
+    options?: any[];
+  }) {
     const generatedQuery = __generateQuery("BusCompany", {
-      populate: [],
-      pagination: { skip: input.skip * input.limit, limit: input.limit },
+      filter: {},
+      search: {
+        query: input.query,
+        fields: input.fields,
+        options: input.options,
+      },
+      populate: input.populate,
+      pagination: { skip: input.skip, limit: input.limit },
     });
-
     try {
-      const busCompanies = await this.db.BusCompanyModel.find()
+      const busCompanies = await this.db.BusCompanyModel.find(
+        generatedQuery.filter
+      )
+        .populate(generatedQuery.populate)
         .skip(generatedQuery.skip)
-        .limit(generatedQuery.limit);
-      return busCompanies;
+        .limit(generatedQuery.limit)
+        .exec();
+
+      const count = await this.db.BusCompanyModel.countDocuments(
+        generatedQuery.filter
+      );
+      return {
+        busCompanies,
+        count,
+      };
     } catch (e) {
       throw e;
     }
@@ -211,6 +232,24 @@ export class BusCompanyService extends IService {
       return dashBoardStat;
     } catch (e) {
       throw e;
+    }
+  }
+
+  async updateOne(input: IUpdateBusCompanyInput): Promise<IbusCompanySchema> {
+    try {
+      const busCompany = await this.db.BusCompanyModel.findByIdAndUpdate(
+        input._id,
+        { $set: { ...input } },
+        { new: true }
+      ).select("-Buses -Drivers -Bookings -Trips -users -status");
+
+      if (!busCompany) {
+        throw new Error("Company not found");
+      }
+
+      return busCompany;
+    } catch (e: any) {
+      throw createError(e.message, 500);
     }
   }
 }

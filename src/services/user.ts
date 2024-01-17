@@ -1,16 +1,22 @@
+import { approved_company_html } from "../templates/new_bus_company";
 import { IAppContext, IService } from "../types/app";
 import {
+  IAddAdminToBusCompanyInput,
   IAdminwithoutPassWord,
   ICreateAdminInput,
   ICreateSudoAdminInput,
+  IResetPasswordInput,
   ISigninInput,
   ISudoAdminwithoutPassWord,
+  IUpdateAdminInput,
   IUserAuth,
   IUserInput,
   IUserwithoutPassWord,
   IVerifyPhoneInput,
 } from "../types/user";
+import { sendEmail } from "../utils/email";
 import createError from "../utils/error";
+import { generatePassword } from "../utils/generatePassword";
 import { _generateToken } from "../utils/token";
 
 export default class UserService extends IService {
@@ -189,10 +195,15 @@ export default class UserService extends IService {
           createdAt: 0,
           updatedAt: 0,
           __v: 0,
-          phone: 0,
-          fullName: 0,
         }
-      );
+      ).populate("busCompany", {
+        name: 1,
+        _id: 1,
+        logo: 1,
+        tagline: 1,
+        socials: 1,
+        email: 1,
+      });
 
       if (!admin) {
         throw createError("User not found", 404);
@@ -203,9 +214,12 @@ export default class UserService extends IService {
       if (!isPasswordValid) {
         throw createError("Wrong Password", 400);
       } else {
-        const token = _generateToken(admin);
+        const { password, ...adminWithOutPassword } = admin.toObject();
+
+        const token = _generateToken(adminWithOutPassword);
+
         const userAuth: IUserAuth = {
-          user: admin as IAdminwithoutPassWord,
+          user: adminWithOutPassword as IAdminwithoutPassWord,
           token: token,
         };
 
@@ -245,4 +259,172 @@ export default class UserService extends IService {
   }
 
   /*************************** Reset Password ****************************/
+
+  async resetPassword(input: IResetPasswordInput) {
+    try {
+      const admin = await this.db.AdminModel.findById(input.id);
+
+      if (!admin) {
+        throw new Error("Account not found");
+      }
+
+      const isPasswordValid = await admin.comparePasswords(input.oldPassword);
+
+      if (!isPasswordValid) {
+        throw new Error("Make sure your old password is correct");
+      }
+
+      if (input.password !== input.confirmPassword) {
+        throw new Error("Password mismatch");
+      }
+
+      admin.password = input.password;
+
+      await admin.save();
+
+      return admin;
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async updateAdmin(input: IUpdateAdminInput) {
+    try {
+      const admin = await this.db.AdminModel.findByIdAndUpdate(
+        input._id,
+        { $set: { ...input } },
+        { new: true }
+      ).populate("busCompany", {
+        name: 1,
+        _id: 1,
+        logo: 1,
+        tagline: 1,
+        socials: 1,
+        email: 1,
+      });
+
+      if (!admin) {
+        throw new Error("Account not found");
+      }
+
+      const { password, ...adminWithOutPassword } = admin.toObject();
+
+      return adminWithOutPassword;
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async addAdminToBusCompany(input: IAddAdminToBusCompanyInput) {
+    try {
+      for (const adminInput of input.admins) {
+        const _admin = await this.db.AdminModel.findOne({
+          email: adminInput.email,
+          busCompany: adminInput.busCompany,
+        });
+
+        if (_admin) {
+          throw new Error("User already exists");
+        }
+
+        const busCompany = await this.db.BusCompanyModel.findById(
+          adminInput.busCompany
+        );
+
+        if (!busCompany) {
+          throw new Error("Bus Company not found");
+        }
+
+        const generatedPassword = generatePassword(8);
+
+        const admin = new this.db.AdminModel({
+          ...adminInput,
+          password: generatedPassword,
+          role:
+            adminInput.role === "Admin"
+              ? "BUS_COMPANY"
+              : adminInput.role === "Member"
+              ? "ADMIN"
+              : null,
+          fullName: "N/A",
+          profilePicture: "N",
+          busCompany: adminInput.busCompany,
+          phone: "N/A",
+        });
+
+        await admin.save();
+
+        await busCompany.updateOne({
+          $push: { users: admin._id },
+        });
+
+        const html = approved_company_html(
+          "Sir/Madam",
+          adminInput.email || "",
+          generatedPassword
+        );
+
+        // send them an email
+        await sendEmail(adminInput.email || "", "Welcome to Molidom", {
+          text: "hi",
+          html: html,
+        });
+      }
+
+      return "Admin(s) added successfully";
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async getAllAdmins(input: { busCompany: string }) {
+    try {
+      const admins = await this.db.AdminModel.find({
+        busCompany: input.busCompany,
+      });
+
+      return admins;
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async editUserRoles(input: { id: string; role: string }) {
+    try {
+      const inputRole =
+        input.role === "Admin"
+          ? "BUS_COMPANY"
+          : input.role === "Member"
+          ? "ADMIN"
+          : null;
+      const admin = await this.db.AdminModel.findByIdAndUpdate(
+        input.id,
+        {
+          $set: { role: inputRole },
+        },
+        { new: true }
+      );
+      if (!admin) {
+        throw new Error("Account not found");
+      }
+
+      return admin;
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
+
+  async deleteUser(input: { id: string }) {
+    try {
+      const admin = await this.db.AdminModel.findByIdAndDelete(input.id);
+
+      if (!admin) {
+        throw new Error("Account not found");
+      }
+
+      return admin;
+    } catch (e: any) {
+      throw createError(e.message, 500);
+    }
+  }
 }

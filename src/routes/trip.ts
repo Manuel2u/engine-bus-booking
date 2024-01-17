@@ -27,15 +27,20 @@ router.get("/trips/search", SEARCH_TRIP);
 
 router.patch("/trip", verifyAccessToken, isAdminOrSuperAdmin, UPDATE_ONE);
 
-router.post("/trip/cancel", verifyAccessToken, isAdminOrSuperAdmin, CANCEL_ONE);
-
-router.post(
-  "/restore-one",
+router.patch(
+  "/trip/cancel",
   verifyAccessToken,
   isAdminOrSuperAdmin,
-  RESTORE_ONE
+  CANCEL_ONE
 );
 
-router.post("/delete-one", verifyAccessToken, isAdminOrSuperAdmin, DELETE_ONE);
+router.patch("/restore", verifyAccessToken, isAdminOrSuperAdmin, RESTORE_ONE);
+
+router.delete(
+  "/trip/delete/:tripId",
+  verifyAccessToken,
+  isAdminOrSuperAdmin,
+  DELETE_ONE
+);
 
 export default router;

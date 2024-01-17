@@ -64,8 +64,11 @@ export interface IAdmin {
   fullName: string;
   phone: string;
   email: string;
+  altEmail: string;
   password: string;
   profilePicture: string;
+  bio: string;
+  jobTitle: string;
   busCompany: Types.ObjectId;
   role: "ADMIN" | "BUS_COMPANY";
   comparePasswords(password: string): Promise<boolean>;
@@ -79,6 +82,17 @@ export interface ICreateAdminInput {
   password: string;
   phone: string;
   busCompany: Types.ObjectId;
+}
+
+export interface IUpdateAdminInput {
+  _id: Types.ObjectId;
+  fullName: string;
+  phone: string;
+  email: string;
+  altEmail: string;
+  profilePicture: string;
+  bio: string;
+  jobTitle: string;
 }
 
 export interface IAdminSchema extends IAdmin, Document {
@@ -125,4 +139,20 @@ export interface IJWT {
   user: IUserSchema;
   admin: IAdminSchema;
   sudoadmin: ISudoAdminSchema;
+}
+
+export interface IResetPasswordInput {
+  id: Types.ObjectId;
+  oldPassword: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface IAddAdminToBusCompanyInputSchema {
+  busCompany: Types.ObjectId;
+  email: string;
+  role: "Admin" | "Member";
+}
+export interface IAddAdminToBusCompanyInput {
+  admins: IAddAdminToBusCompanyInputSchema[];
 }

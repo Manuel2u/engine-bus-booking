@@ -41,9 +41,53 @@ const busCompanySchema = new Schema<IbusCompanySchema>({
     type: SchemaTypes.String,
     required: true,
   },
+  socials: {
+    type: [
+      new Schema({
+        name: {
+          type: SchemaTypes.String,
+          required: false,
+        },
+        link: {
+          type: SchemaTypes.String,
+          required: false,
+        },
+      }),
+    ],
+    required: false,
+  },
+  tagline: {
+    type: SchemaTypes.String,
+    required: false,
+  },
+  logo: {
+    type: SchemaTypes.String,
+    required: false,
+  },
+  address: {
+    type: new Schema({
+      country: {
+        type: SchemaTypes.String,
+        required: false,
+      },
+      state: {
+        type: SchemaTypes.String,
+        required: false,
+      },
+      city: {
+        type: SchemaTypes.String,
+        required: false,
+      },
+      street: {
+        type: SchemaTypes.String,
+        required: false,
+      },
+    }),
+    required: false,
+  },
   note: {
     type: SchemaTypes.String,
-    required: true,
+    required: false,
   },
   Buses: [
     {
@@ -76,7 +120,7 @@ const busCompanySchema = new Schema<IbusCompanySchema>({
   ],
   status: {
     type: SchemaTypes.String,
-    enum: ["ACCEPTED", "REJECTED", "PENDING"],
+    enum: ["APPROVED", "REJECTED", "PENDING"],
     required: true,
   },
 });

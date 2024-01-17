@@ -12,6 +12,10 @@ const AdminSchema = new Schema<IAdminSchema>(
       type: SchemaTypes.String,
       required: true,
     },
+    altEmail: {
+      type: SchemaTypes.String,
+      required: false,
+    },
     phone: {
       type: SchemaTypes.String,
       required: true,
@@ -23,6 +27,14 @@ const AdminSchema = new Schema<IAdminSchema>(
     password: {
       type: SchemaTypes.String,
       required: true,
+    },
+    bio: {
+      type: SchemaTypes.String,
+      required: false,
+    },
+    jobTitle: {
+      type: SchemaTypes.String,
+      required: false,
     },
     busCompany: {
       type: SchemaTypes.ObjectId,

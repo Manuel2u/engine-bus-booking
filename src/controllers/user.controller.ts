@@ -274,3 +274,173 @@ export const GOOGLE = async (
     next(e);
   }
 };
+
+/***************************** RESET PASSWORD ******************************/
+
+export const RESETPASSWORD = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const response = await req.context.services?.user.resetPassword({
+      id: req.user._id,
+      oldPassword,
+      password: newPassword,
+      confirmPassword: confirmNewPassword,
+    });
+
+    return res.status(200).json({ status: "success", data: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+/***************************** UPDATE USER ******************************/
+
+export const UPDATEADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      _id,
+      fullName,
+      phone,
+      email,
+      altEmail,
+      profilePicture,
+      bio,
+      jobTitle,
+    } = req.body;
+
+    if (!fullName || !phone || !email) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const response = await req.context.services?.user.updateAdmin({
+      _id,
+      fullName,
+      phone,
+      email,
+      altEmail,
+      profilePicture,
+      bio,
+      jobTitle,
+    });
+
+    return res.status(200).json({ status: "success", data: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const ADD_ADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { admins } = req.body;
+
+    if (!admins) {
+      return res
+        .status(400)
+        .json({ message: "Make sure all input fileds are correct" });
+    }
+
+    const response = await req.context.services?.user.addAdminToBusCompany({
+      admins,
+    });
+
+    return res.status(200).json({ status: "success", message: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+/***************************** GET ALL USERS ******************************/
+
+export const GETALL = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const busCompany = req.query.busCompany as string;
+
+    if (!busCompany) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
+    }
+    const response = await req.context.services?.user.getAllAdmins({
+      busCompany,
+    });
+
+    return res.status(200).json({ status: "success", users: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const EDIT_ADMIN_ROLE = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { adminID, role } = req.body;
+
+    if (!adminID || !role) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
+    }
+    const response = await req.context.services?.user.editUserRoles({
+      id: adminID,
+      role,
+    });
+
+    return res.status(200).json({ status: "success", users: response });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const DELETE_ADMIN = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminID = req.params.adminID as string;
+
+    if (!adminID) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Make sure all input fileds are correct",
+      });
+    }
+    const response = await req.context.services?.user.deleteUser({
+      id: adminID,
+    });
+
+    return res.status(200).json({ status: "success", users: response });
+  } catch (e) {
+    next(e);
+  }
+};

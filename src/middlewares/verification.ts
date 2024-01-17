@@ -39,6 +39,9 @@ export const verifyAccessToken = async (
         if (err) {
           next(createError("Token expired", 401));
         }
+
+        console.log(decoded);
+
         const { user } = decoded;
         req.user = user;
       }
@@ -46,7 +49,7 @@ export const verifyAccessToken = async (
 
     next();
   } catch (err) {
-    next(createError("Invalid access token", 401));
+    next(createError(err.message, 401));
   }
 };
 

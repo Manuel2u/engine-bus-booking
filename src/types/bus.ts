@@ -5,7 +5,7 @@ export interface IBus {
   model: string;
   yearOfMake: number;
   colour: string;
-  numberOfSeats: string;
+  numberOfSeats: number;
   status: "ACTIVE" | "INACTIVE" | "DECOMMISSIONED";
   insurance: string;
   createdBy: Types.ObjectId;

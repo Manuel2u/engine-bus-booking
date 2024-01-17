@@ -10,11 +10,12 @@ export interface ITrip {
     startTime: string;
     endTime: string;
   };
-  tripStatus: "CANCELLED" | "ACTIVE";
+  tripStatus: "CANCELLED" | "ACTIVE" | "NOT_ACTIVE | DELETED";
   tripType: string;
   busCompany: Types.ObjectId;
   bus: PopulatedDoc<IBus>;
   price: String;
+  slots: [string];
   createdBy: Types.ObjectId;
 }
 
@@ -51,14 +52,22 @@ export interface ITripSearchResult {
 }
 
 export interface IUpdateTripInput {
-  _id: Types.ObjectId;
+  tripId?: Types.ObjectId;
+  date?: Date;
+  origin?: Types.ObjectId;
+  destination?: Types.ObjectId;
+  TimeScheduled?: { startTime: string; endTime: string };
+  tripType?: string;
+  price?: string;
+  numberOfBusAssigned?: string;
+  bus?: Types.ObjectId;
 }
 export interface IDeleteTripInput {
   _id: Types.ObjectId;
 }
 
-export interface IcreateTripInput extends ITrip {}
+export interface IcreateTripInput extends Omit<ITrip, "slots"> {}
 export interface IcreateTripRequestBody
-  extends Omit<ITrip, "createdBy" | "busCompany"> {}
+  extends Omit<ITrip, "createdBy" | "busCompany" | "slots"> {}
 
 export interface ITripModel extends Model<ITripSchema> {}

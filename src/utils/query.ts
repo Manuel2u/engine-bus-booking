@@ -139,17 +139,17 @@ export function __generateQuery(
   };
 }
 
-// // Example usage:
+// Example usage:
 // const queryProps = {
 //   filter: {
-//     email: { eq: "emmanueldodoo94@gmail.com" },
+//     // email: { eq: "emmanueldodoo94@gmail.com" },
 //   },
 //   pagination: { skip: 0, limit: 10 },
-//   populate: ["Tickets", "Bookings.Trip", "Bookings.Bus"],
+//   populate: [""],
 //   sort: { email: "asc" as const },
 //   search: {
-//     query: "emma",
-//     fields: ["fullName", "programme", "email"],
+//     query: "V",
+//     fields: ["name", "email"],
 //     options: [SearchOperatorOption.CaseInsensitive],
 //   },
 // };
