@@ -4,11 +4,11 @@ dotenv.config();
 
 export default {
   firebaseConfig: {
-    apiKey: "AIzaSyAZT3ZEPsDiL3aAfjTRvixUDTJg9saY_Bk",
-    authDomain: "test-project-for-molidom.firebaseapp.com",
-    projectId: "test-project-for-molidom",
-    storageBucket: "test-project-for-molidom.appspot.com",
-    messagingSenderId: "635040389312",
-    appId: "1:635040389312:web:6b84b71f1f88a0b22af525",
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_API_ID,
   },
 };
