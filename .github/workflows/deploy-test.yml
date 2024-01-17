@@ -5,7 +5,7 @@ run-name: Deploy Notification Service Test - ${{ github.actor }}
 on:
   push:
     branches:
-      - master
+      - test
 
 jobs:
   build:
